@@ -1,0 +1,288 @@
+﻿@model List<CalistoNET6.Models.ModeloResSignos>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*agregar signo*@
+<div id="agregarSigno" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="modalSigno">
+        </div>
+    </div>
+</div>
+
+@*agregar medicamento*@
+<div id="agregarMedicamento" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="modalMedicamento">
+        </div>
+    </div>
+</div>
+
+@*agregar insumo*@
+<div id="agregarIns" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="modalIns">
+        </div>
+    </div>
+</div>
+
+@*agregar Estudio*@
+<div id="agregarEst" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="modalEst">
+        </div>
+    </div>
+</div>
+
+@*agregar Consulta*@
+<div id="agregarCon" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="modalCon">
+        </div>
+    </div>
+</div>
+
+
+@*mensaje usuario*@
+<div class="modal fade" id="msgParaUsuario" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Cerrar" onclick="CargarTodo()" data-toggle="tooltip" data-placement="bottom" title="Cerrar"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMensaje">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success"  data-bs-dismiss="modal" onclick="CargarTodo()" data-toggle="tooltip" data-placement="bottom" title="Aceptar">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*mensaje usuario*@
+<div class="modal fade " id="msgMedicamento" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Éxito</h4>
+                <button type="button" class="close"  data-bs-dismiss="modal" aria-label="Cerrar"  data-toggle="tooltip" data-placement="bottom" title="Cerrar"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMensajeMedicamento">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" data-toggle="tooltip" data-placement="bottom" title="Aceptar">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@*lista residentes*@
+<div class="panel panel-success mt-2">
+    <div class="panel-heading">
+        <h3>Lista de residentes</h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="form-group mt-2 ">
+            <label for="cedula" class="col-md-2"><strong>Buscar:</strong></label>
+            <div class="col-md-4 mt-1 row">
+                <div class="col-md-9">
+                    <input type="text" id="txtBusqueda" name="txtBusqueda" class="form-control" onchange="buscar()">
+
+                </div>
+                              
+            </div>
+
+        </div>
+        <div id="divResidentes">
+            @{
+                Html.RenderPartial("TablaResSignos", Model);
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function CargarTodo() {
+        $("#btnRefresh").addClass("disabled");
+
+        $.ajax({
+            type: "GET",
+            url: "Residente/GetTodos",
+            success: function (response) {
+                $("#divResidentes").html(response);
+                $("#btnRefresh").removeClass("disabled");
+            },
+            error: function () {
+                alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+                $("#btnRefresh").removeClass("disabled");
+            }
+        })
+    }
+
+    function PrimeraCarga() {
+        $.ajax({
+            type: "GET",
+            url: "Residente/GetTodosParaSignos",
+            success: function (response) {
+                $("#divResidentes").html(response);
+
+                $("#agregarSigno").modal("hide");
+                $("#msgParaUsuario").modal("hide");
+
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+            }
+        })
+    }
+
+    function GetPagina(pagina) {
+        $.ajax({
+            type: "GET",
+            url: "AgregaSignoRes",
+            data: { indicePag: pagina },
+            success: function (response) {
+                $("#divResponsables").html(response);
+            }
+        });
+    }
+
+    function AgregarSigno(cedula) {
+
+        $.ajax({
+            type: "GET",
+            url: "AgregarSigno",
+            data: { cedula: cedula },
+            success: function (response) {
+
+                $("#modalSigno").html(response);
+                $("#agregarSigno").modal('show');
+
+            },
+            error: function () {
+                alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+            }
+        });
+
+    }
+
+    function AgregarMedicamento(cedula) {
+        $.ajax({
+            type: "GET",
+            url: "AgregarMedicamento",
+            data: { cedula: cedula },
+            success: function (response) {
+               
+                $("#modalMedicamento").html(response);
+                $("#agregarMedicamento").modal('show');
+
+            },
+            error: function () {
+                $("#modalMedicamento").html(
+                    `<div class="modal-header">
+            <h4 class="modal-tittle">Agregar un medicamento</h4>
+            <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+            <hr />
+        </div>
+
+        <div class="modal-body ">
+                ${response.mensaje}
+                </div> <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-bs-dismiss="modal" data-toggle="tooltip" data-placement="bottom" title="Cerrar">Cerrar</button>
+                    </div>
+                </div>
+
+                `
+                );
+                $("#agregarMedicamento").modal('show');
+                alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+            }
+        });
+
+    }
+    function AgregarConsulta(cedula) {
+        $.ajax({
+            type: "GET",
+            url: "AgregarConsulta",
+            data: { cedula: cedula },
+            success: function (response) {
+               
+                $("#modalCon").html(response);
+                $("#agregarCon").modal('show');
+
+            },
+            error: function () {
+                alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+            }
+        });
+
+    }
+    function AgregarEstudio(cedula) {
+        $.ajax({
+            type: "GET",
+            url: "AgregarEstudio",
+            data: { cedula: cedula },
+            success: function (response) {
+
+                $("#modalEst").html(response);
+                $("#agregarEst").modal('show');
+
+            },
+            error: function () {
+                alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+            }
+        });
+
+    }
+
+    function AgregarInsumo(cedula) {
+
+        $.ajax({
+            type: "GET",
+            url: "AgregarInsumo",
+            data: { cedula: cedula },
+            success: function (response) {
+
+                $("#modalIns").html(response);
+                $("#agregarIns").modal('show');
+
+            },
+            error: function () {
+                alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+            }
+        });
+
+    }
+
+    function buscar() {
+
+        let valor = document.getElementById("txtBusqueda").value.toUpperCase();
+        let nombres = document.getElementById("tablaResidentes");
+        let filas = nombres.getElementsByTagName("tr");
+        let indice = 1;
+
+        if (isNaN(valor)) { indice = 0 };
+
+        for (let i = 0; i < filas.length; i++) {
+
+            let columnaLenguaje = filas[i].getElementsByTagName("td")[indice];
+
+            let lenguaje = columnaLenguaje.textContent;
+            filas[i].style.display = lenguaje.toUpperCase().indexOf(valor) > -1 ? "" : "none";
+        }
+    }
+    document.getElementById("txtBusqueda").addEventListener("keyup", buscar);
+
+
+
+</script>

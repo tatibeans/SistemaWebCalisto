@@ -1,0 +1,220 @@
+﻿@using Dominio.Entidades;
+@using Newtonsoft.Json
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Calisto</title>
+
+    <link rel="stylesheet" href="~/CalistoNET6.styles.css" asp-append-version="true" />
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.jquery.min.js"></script>
+    <link href="https://cdn.rawgit.com/harvesthq/chosen/gh-pages/chosen.min.css" rel="stylesheet" />
+   
+</head>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" href="@Url.Action("VistaUsuario","Usuario")">Proyecto Calisto.</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+        <!-- Navbar Search-->
+        <div class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            @{
+                var usu = Context.Session.GetString("Usuario");
+                var nombreUsu = JsonConvert.DeserializeObject<Usuario>(usu).Nombre;
+                <p class="navbar-brand text-end">@nombreUsu</p>
+                //@nombreUsu
+            }
+        </div>
+        <!-- Navbar-->
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+
+
+                    <li><a class="dropdown-item" href="@Url.Action("LogOut","Usuario")">Cerrar sesión</a></li>
+                </ul>
+            </li>
+        </ul>
+
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Menu</div>
+
+                        <a style="cursor:pointer;" class="nav-link collapsed border-bottom" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-user"></i></div>
+                            Usuarios
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+
+                        </a>
+
+                        <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                @{
+                                    if (usu != null)
+                                    {
+                                        var usuario = JsonConvert.DeserializeObject<Usuario>(usu);
+                                        if (usuario.DevolverRol().Contains("DIRECTOR") && !(usuario.DevolverRol().Contains("ADMINISTRADOR")))
+                                        {
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("RegistrarUsuario","Usuario")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Registrar</a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("VerTodos","Usuario")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Ver Todos</a>
+
+                                        }
+                                        else if (!(usuario.DevolverRol().Contains("DIRECTOR")) && usuario.DevolverRol().Contains("ADMINISTRADOR"))
+                                        {
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("RegistrarUsuario","Usuario")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Registrar</a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("VerTodos","Usuario")"><i class="fa-solid fa-circle-arrow-right me-2"></i>  Ver Todos</a>
+                                        }
+                                        else if (usuario.DevolverRol().Contains("DIRECTOR") && usuario.DevolverRol().Contains("ADMINISTRADOR"))
+                                        {
+
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("RegistrarUsuario","Usuario")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Registrar </a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("VerTodos","Usuario")"><i class="fa-solid fa-circle-arrow-right me-2"></i>  Ver Todos</a>
+                                        }
+                                        else
+                                        {
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("RegistrarUsuario","Usuario")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Registrar</a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("VerTodos","Usuario")"><i class="fa-solid fa-circle-arrow-right me-2"></i>  Ver Todos</a>
+                                        }
+                                    }
+                                }
+
+                            </nav>
+                        </div>
+
+                        <a style="cursor:pointer;" class="nav-link collapsed border-bottom " href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-person-cane"></i></div>
+                            Residente
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+
+                        <div class="collapse" id="collapsePages" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                @{
+
+                                    if (usu != null)
+                                    {
+                                        var usuario = JsonConvert.DeserializeObject<Usuario>(usu);
+                                        if (usuario.DevolverRol().Contains("DIRECTOR") && !(usuario.DevolverRol().Contains("ADMINISTRADOR")))
+                                        {
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("Index","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Ver todos</a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("InicioAgregarSigno","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Acciones </a>
+
+
+                                        }
+                                        else if (!(usuario.DevolverRol().Contains("DIRECTOR")) && usuario.DevolverRol().Contains("ADMINISTRADOR"))
+                                        {
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("Index","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Ver todos</a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("IngresoResidente","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Ingresar </a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("InicioAgregarSigno","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Acciones </a>
+                                        }
+                                        else if (usuario.DevolverRol().Contains("DIRECTOR") && usuario.DevolverRol().Contains("ADMINISTRADOR"))
+                                        {
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("Index","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Ver todos</a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("IngresoResidente","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Ingresar</a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("InicioAgregarSigno","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i>Acciones</a>
+                                        }
+                                    }
+                                }
+
+                            </nav>
+                        </div>
+
+                        <a style="cursor:pointer;" class="nav-link collapsed border-bottom " href="#" data-bs-toggle="collapse" data-bs-target="#alertas" aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fa-solid fa-bell"></i></div>
+                            Alertas
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+
+                        <div class="collapse" id="alertas" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav">
+                                @{
+                                    if (usu != null)
+                                    {
+                                        var usuario = JsonConvert.DeserializeObject<Usuario>(usu);
+                                        if (usuario.DevolverRol().Contains("DIRECTOR") && !(usuario.DevolverRol().Contains("ADMINISTRADOR")))
+                                        {
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("CrearAlerta","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i> Crear alerta</a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("VerAlertas","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i> Ver alertas</a>
+                                        }
+                                        else if (!(usuario.DevolverRol().Contains("DIRECTOR")) && usuario.DevolverRol().Contains("ADMINISTRADOR"))
+                                        {
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("CrearAlerta","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i> Crear alerta</a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("VerAlertas","Residente")"><i class="fa-solid ffa-circle-arrow-right me-2"></i> Ver alertas</a>
+
+                                        }
+                                        else if (usuario.DevolverRol().Contains("DIRECTOR") && usuario.DevolverRol().Contains("ADMINISTRADOR"))
+                                        {
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("CrearAlerta","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i> Crear alerta</a>
+                                            <a style="cursor:pointer;" class="nav-link" href="@Url.Action("VerAlertas","Residente")"><i class="fa-solid fa-circle-arrow-right me-2"></i> Ver alerta</a>
+
+                                        }
+                                    }
+                                }
+
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <main id="layoutSidenav_content">
+            <div class="container-fluid px-4">
+                @RenderBody()
+            </div>
+        </main>
+
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @*este script usa los data annotations*@
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+   
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+
+
+
+    <script>
+
+        window.addEventListener('DOMContentLoaded', event => {
+            const sidebarToggle = document.body.querySelector('#sidebarToggle');
+            if (sidebarToggle) {
+
+                sidebarToggle.addEventListener('click', event => {
+                    event.preventDefault();
+                    document.body.classList.toggle('sb-sidenav-toggled');
+                    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+
+                });
+            }
+        });
+
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+
+    </script>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

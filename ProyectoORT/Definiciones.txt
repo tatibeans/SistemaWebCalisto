@@ -1,0 +1,11 @@
+vamos a hacer solo 1 localhost para todo
+			  una tabla por centro
+
+guardamos en el usuario, según el tipo de usuario, una lista de centros o una lista de residentes
+existen ambas listas, una va a estar vacía
+
+al hacer login, se muestra un popup que deje elegir a cual centro quiere entrar (si no es responsable)
+si es responsable, mensaje de xfi entra x la pwa
+
+por ahora, si quiere cambiar de centro se desloguea y vuelve a entrar
+nice to have: que pueda cambiar de centro dentro de la pagina

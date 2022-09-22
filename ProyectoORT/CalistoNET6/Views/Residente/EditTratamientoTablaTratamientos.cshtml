@@ -1,0 +1,96 @@
+﻿@model CalistoNET6.Models.ModeloTratamiento
+
+
+
+<div class="modal-header">
+    <h4 class="align-left">Editar el tratamiento</h4>
+    <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+</div>
+<div class="modal-body">
+    <form asp-action="Editar tratamiento" name="formulario" id="EditTratamiento">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group row  ">
+            <div class="col-5 ">  <label asp-for="IdTratamiento" class="control-label">Id Tratamiento</label></div>
+            <div class="col-7 ">  <input asp-for="IdTratamiento" id="idTratamiento" class="form-control" readonly /></div>
+        </div>
+
+        <input asp-for="CiFuncionario" hidden readonly id="ciFuncionario" class="form-control" />
+
+
+        <div class="form-group row ">
+            <div class="col-5 ">  <label asp-for="CiResidente" class="control-label">Residente</label></div>
+            <div class="col-7 ">  <input asp-for="CiResidente" id="ciResidente" class="form-control" readonly /></div>
+        </div>
+
+        <div class="form-group row  ">
+            <div class="col-5 "> <label asp-for="Medico" class="control-label">Medico</label></div>
+            <div class="col-7 ">  <input asp-for="Medico" id="medico" class="form-control" /></div>
+            <div class="offset-5 col-6">  <span asp-validation-for="Medico" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row  ">
+            <div class="col-5 ">  <label asp-for="Descripcion" class="control-label">Descripción</label></div>
+            <div class="col-7 ">  <input asp-for="Descripcion" id="descripcion" class="form-control" /></div>
+            <div class="offset-5 col-6">  <span asp-validation-for="Descripcion" class="text-danger"></span></div>
+        </div>
+
+
+        <div class="form-group row ">
+            <div class="col-5 "> <label asp-for="FechaComienzo" class="control-label">Fecha comienzo</label></div>
+            <div class="col-7 ">  <input type="date" asp-for="FechaComienzo" id="fechaComienzo" class="form-control" /></div>
+            <div class="offset-5 col-6">  <span asp-validation-for="FechaComienzo" class="text-danger"></span></div>
+
+        </div>
+
+        <div class="form-group row  ">
+            <div class="col-5 "> <label asp-for="FechaFin" class="control-label">Fecha fin</label></div>
+            <div class="col-7 ">  <input type="date" asp-for="FechaFin" id="fechaFin" class="form-control" /></div>
+            <div class="offset-5 col-6">  <span asp-validation-for="FechaFin" class="text-danger"></span></div>
+
+        </div>
+
+        <div class="modal-footer">
+           <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success">Editar</button>
+         
+        </div>
+
+
+    </form>
+</div>
+
+
+
+<script>
+    $.validator.unobtrusive.parse("#EditTratamiento");
+
+
+    $(document).ready(function() {
+        var fechaMin = $("#fechaComienzo").val();
+
+
+        $("#fechaFin").attr({ "min": fechaMin });
+    });
+
+
+    $("#EditTratamiento").submit(function() {
+
+        var EditTrat =
+        {
+            IdTratamiento: $("#idTratamiento").val(),
+            CiFuncionario: $("#ciFuncionario").val(),
+            CiResidente: $("#ciResidente").val(),
+            Medico: $("#medico").val(),
+            Descripcion: $("#descripcion").val(),
+            FechaComienzo: $("#fechaComienzo").val(),
+            FechaFin: $("#fechaFin").val()
+        };
+
+        if ($("#EditTratamiento").valid()) {
+            EditarTratamiento(EditTrat);
+        }
+
+        return false;
+    })
+</script>

@@ -1,0 +1,117 @@
+﻿@model CalistoNET6.Models.ModeloEstudio
+
+<div class="modal-header">
+    <h4 class="modal-tittle">Agregar un estudio médico</h4>
+    <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+    <hr />
+</div>
+
+<div class="modal-body ">
+
+    <div>
+        <div>
+            <form asp-action="AgregarEstudio" id="agregarEstudio">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 "> <label asp-for="CiResidente" class="control-label"></label></div>
+                    <div class="col-7 "> <input asp-for="CiResidente" readonly class="form-control" /></div>
+
+                </div>
+                <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="CiResidente" class="text-danger"></span></div>
+                </div>
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 ">  <label asp-for="Descripcion" class="control-label"></label></div>
+                    <div class="col-7 "> <input asp-for="Descripcion" class="form-control" onkeypress="return (esLetra(event, this) || esNumero(event, this))" /></div>
+
+                </div>
+                <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="Descripcion" class="text-danger"></span></div>
+                </div>
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 ">  <label asp-for="FechaEstudio" class="control-label"></label></div>
+                    <div class="col-7 "><input asp-for="FechaEstudio" min="1800-01-01" max="3000-01-01" class="form-control " /></div>
+
+                </div>
+                <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="FechaEstudio" class="text-danger"></span></div>
+                </div>
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 ">  <label asp-for="Especificaciones" class="control-label"></label></div>
+                    <div class="col-7 "> <input asp-for="Especificaciones" class="form-control" onkeypress="return (esLetra(event, this) || esNumero(event, this))" /></div>
+                
+                </div>
+                  <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="Especificaciones" class="text-danger"></span></div>
+                </div>
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 ">  <label asp-for="Direccion" class="control-label"></label></div>
+                    <div class="col-7 "> <input asp-for="Direccion" class="form-control" /></div>
+                 
+                </div>
+                  <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="Direccion" class="text-danger"></span></div>
+                </div>
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 "> <label asp-for="EstimadoResultado" class="control-label"></label></div>
+                    <div class="col-7 "> <input disabled="true " asp-for="EstimadoResultado" min="1800-01-01" max="3000-01-01" class="form-control" /></div>
+                  
+                </div>
+                  <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="EstimadoResultado" class="text-danger"></span></div>
+                </div>
+                <div class="modal-footer  mt-2 ">
+                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <input type="submit" value="Guardar" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $.validator.unobtrusive.parse("#agregarEstudio");
+   
+
+    $("#FechaEstudio").on('change', function() {
+        var fechaMin = $("#FechaEstudio").val();
+        $("#EstimadoResultado").removeAttr('disabled');
+        $("#EstimadoResultado").attr({ "min": fechaMin });
+    })
+
+    function esLetra(evt, elemento) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if ((charCode < 97 || charCode > 122)//letras mayusculas
+            && (charCode < 65 || charCode > 90) //letras minusculas
+            && (charCode != 45) //retroceso
+            && (charCode != 241) //ñ
+            && (charCode != 209) //Ñ
+            && (charCode != 32) //espacio
+            && (charCode != 225) //á
+            && (charCode != 233) //é
+            && (charCode != 237) //í
+            && (charCode != 243) //ó
+            && (charCode != 250) //ú
+            && (charCode != 193) //Á
+            && (charCode != 201) //É
+            && (charCode != 205) //Í
+            && (charCode != 211) //Ó
+            && (charCode != 218) //Ú
+
+        ) return false;
+
+        return true;
+    }
+
+    function esNumero(evt, elemento){
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        return charCode >= 48 && charCode <= 57;
+    }
+
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

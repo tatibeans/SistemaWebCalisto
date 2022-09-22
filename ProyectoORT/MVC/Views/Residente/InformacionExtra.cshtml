@@ -1,0 +1,152 @@
+﻿@model List<MVC.Models.ModeloSignoVital>
+@{
+    Layout = Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="modal fade" id="editarSigno" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="modalEditar">
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="borrarSigno" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="modalBorrar">
+
+        </div>
+    </div>
+</div>
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>InformacionExtra</title>
+</head>
+<body>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+        <li><a data-toggle="tab" href="#menu1">Menu 1</a></li>
+        <li><a data-toggle="tab" href="#menu2">Menu 2</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">
+            <h3>HOME</h3>
+            <p>Some content.</p>
+
+            @{
+                Html.RenderPartial("TablaSignos", Model);
+            }
+        </div>
+        <div id="menu1" class="tab-pane fade">
+            <h3>Menu 1</h3>
+            <p>Some content in menu 1.</p>
+        </div>
+        <div id="menu2" class="tab-pane fade">
+            <h3>Menu 2</h3>
+            <p>Some content in menu 2.</p>
+        </div>
+    </div>
+
+
+
+    <div>
+    </div>
+</body>
+</html>
+
+<script>
+    // falta logica para igualar fechas y sacar botones 
+
+    var d = new Date().getDate();
+    var m = new Date().getMonth()+1;
+    var y = new Date().getFullYear();
+    var fecha = armarFecha();
+
+    function armarFecha()
+    {
+        if (m<10) {
+            return d + " 0" + m + " " + y
+        }
+        else
+        {
+            return d + " " + m + " " + y
+        }
+
+    }    
+
+    document.querySelectorAll('#tblSignos tr')
+
+        .forEach(e => e.addEventListener("click", function () {           
+            // si no es header y es de la fecha de hoy 
+            if ($(this).find("td:eq(0)").text() != ""
+                && $(this).find("td:eq(3)").text().trim() == fecha)
+            {               
+                EditarSignoGet($(this).find("td:eq(0)").text().trim())
+            }                       
+        }));
+
+    function EditarSignoGet(idSig) {
+        $.ajax({
+            type: "GET",
+            url: "EditarSigno",
+            data: { idSig: idSig },
+            success: function (response) {
+
+                $("#modalEditar").html(response);
+                $("#editarSigno").modal('show');
+
+            },
+            error: function () {
+                alert("Ha habido un error.");
+                $("#btnRefresh").removeClass("disabled");
+            }
+
+        });
+    }
+
+    function EditarSigno(idSig) {
+        $.ajax({
+            type: "POST",
+            url: "EditarSigno",
+            data: { idSig : idSig },
+            success: function (response) {
+
+                $("#modalEditar").html(response);
+                $("#editarSigno").modal('show');
+
+            },
+            error: function () {
+                alert("Ha habido un error.");
+                $("#btnRefresh").removeClass("disabled");
+            }
+
+        });
+    }
+
+    function BorrarSigno(idSig) {
+        $.ajax({
+            type: "POST",
+            url: "BorrarSigno",
+            data: { idSig : idSig },
+            success: function (response) {
+
+                $("#modalEditar").html(response);
+                $("#borrarSigno").modal('show');
+
+            },
+            error: function () {
+                alert("Ha habido un error.");
+                $("#btnRefresh").removeClass("disabled");
+            }
+
+        });
+    }
+</script>

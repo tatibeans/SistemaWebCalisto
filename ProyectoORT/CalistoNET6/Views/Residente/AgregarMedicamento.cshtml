@@ -1,0 +1,265 @@
+﻿@*@model IEnumerable<CalistoNET6.Models.ModeloTratamiento>*@
+@model Dominio.Entidades.Medicamento
+@using Dominio.Entidades
+
+
+
+<div class="modal-header">
+    <h4 class="modal-tittle">Agregar un medicamento</h4>
+    <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+    <hr />
+</div>
+
+
+<div class="modal-body ">
+
+    <div @*class="row"*@>
+        <div @*class="col-md-4"*@>
+            @* <form asp-action="AgregarMedicamento">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            *@
+            <div class="form-group row mt-2 ">
+                <div class="col-5 ">   <label for="elegirTratamiento" class="control-label">Tratamientos</label>   </div>
+
+                <div class="col-7 ">
+                    <select onchange="guardarTratamiento(this.value)" id="elegirTratamiento" class="form-control">
+                        <option value="-1">Seleccione un tratamiento</option>
+
+
+                    </select>
+                </div>
+
+            </div>
+            <div class="form-group row mt-2 " id="tratSinSustancia">
+            </div>
+            <div class="form-group  mt-2 " id="eligioTratamiento" hidden>
+                <input hidden id="tratElegido">
+
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 ">   <label for="elegirSustancia" class="control-label">Sustancia</label>   </div>
+                    <div class="col-7 ">
+                        <select onchange="guardarSustancia(this.value)" id="elegirSustancia" class="form-control">
+                        </select>
+                    </div>
+
+                </div>
+
+
+
+                <div id="divMedicamento" hidden class="form-group mt-2 ">
+
+                    <form asp-action="agregarMedi" name="agregarMedi" id="agregarMedi">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input id="sustanciaMed" hidden readonly />
+
+                        <div class="form-group row mt-2 ">
+                            <div class="col-5 ">   <label class="control-label" asp-for="Nombre">Nombre:</label>   </div>
+                            <div class="col-7 ">  <input asp-for="Nombre"  type="text" class="form-control" id="Nombre"  /></div>
+                        </div>
+                        <div class="form-group row mt-2 ">
+                            <div class="offset-5 col-6">  <span asp-validation-for="Nombre" class="text-danger"></span></div>
+                        </div>
+
+
+                        <div class="form-group row mt-2 ">
+                            <div class="col-5 ">   <label class="control-label" asp-for="Presentacion">Presentación (mg / mL): </label>   </div>
+                            <div class="col-7 "><input class="form-control" type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" id="Presentacion" asp-for="Presentacion" /></div>
+
+                        </div>
+                        <div class="form-group row mt-2 ">
+                            <div class="offset-5 col-6">  <span asp-validation-for="Presentacion" class="text-danger"></span></div>
+                        </div>
+                        <div class="form-group row mt-2 ">
+                            <div class="col-5 ">   <label class="control-label" asp-for="Cantidad">Cantidad por empaque: </label>   </div>
+                            <div class="col-7 "> <input class="form-control"  type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" id="Cantidad" asp-for="Cantidad" /></div>
+                        </div>
+
+                        <div class="form-group row mt-2 ">
+                            <div class="offset-5 col-6">  <span asp-validation-for="Cantidad" class="text-danger"></span></div>
+                        </div>
+
+                        <div class="form-group row mt-2 ">
+                            <div class="col-5 ">   <label class="control-label" asp-for="Stock">Stock:</label>   </div>
+                            <div class="col-7 "> <input class="form-control" type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" id="Stock" asp-for="Stock" /></div>
+                        </div>
+
+                        <div class="form-group row mt-2 ">
+                            <div class="offset-5 col-6">  <span asp-validation-for="Stock" class="text-danger"></span></div>
+                        </div>
+
+
+                        <div class="form-group row mt-2 ">
+                            <div class="col-5 ">   <label class="control-label" asp-for="Laboratorio">Laboratorio:</label>   </div>
+                            <div class="col-7 "> <input class="form-control" id="Laboratorio" asp-for="Laboratorio" /></div>
+                        </div>
+
+                        <div class="form-group row mt-2 ">
+                            <div class="offset-5 col-6">  <span asp-validation-for="Laboratorio" class="text-danger"></span></div>
+                        </div>
+
+                        <div class="modal-footer ">
+
+                            <input type="submit" class="btn btn-primary" id="btnAgregar" value="Agregar" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    
+  
+
+    $.validator.unobtrusive.parse("#agregarMedi");
+
+
+    var tratamientos = @Html.Raw(Json.Serialize(@ViewBag.Tratamientos));
+    var nombreTratamientos = [];
+    var tratamiento;
+    $(document).ready(function() {
+        armarComboTratamiento();
+    });
+    //armar combo tratamientos
+    function armarComboTratamiento() {
+        for (var i = 0; i < tratamientos.length; i++) {
+            $("#elegirTratamiento").append(`<option value='${i}'> ${tratamientos[i]["descripcion"]}</option>`)
+
+        }
+    }
+
+    // seleccionar Tratamiento
+    function guardarTratamiento(val) {
+        tratamiento = tratamientos[val];
+        if (val < 0) {
+            $("#eligioTratamiento").attr("hidden", true);
+            $("#tratSinSustancia").html("")
+            $("#divMedicamento").attr("hidden", true);
+            //$("#tratSinSustancia").attr("hidden", true);
+        }
+        else {
+
+            armarComboSustancia(val)
+
+            if (tratamientos[val]["recetas"].length > 0) {
+
+                $("#eligioTratamiento").attr("hidden", false);
+                $("#tratSinSustancia").html("");
+            }
+            else {
+
+                $("#eligioTratamiento").attr("hidden", true);
+                $("#tratSinSustancia").html("<p>Tratamiento sin sustancia</p>")
+            }
+        }
+    }
+
+    //Cargar Sustancias
+    function armarComboSustancia(trat) {
+
+        var sustancias = []
+        var comboSustancias = '<option value ="">Seleccione una sustancia</option>';
+        for (var i = 0; i < tratamientos[trat]["recetas"].length; i++) {
+            var sustActual = tratamientos[trat]["recetas"][i]["sustancia"];
+            if (!sustancias.includes(sustActual) && sustActual) {
+                comboSustancias += `<option value='${tratamientos[trat]["recetas"][i]["sustancia"]}'> ${tratamientos[trat]["recetas"][i]["sustancia"]}</option>`
+                sustancias.push(tratamientos[trat]["recetas"][i]["sustancia"])
+            }
+
+        }
+        $("#elegirSustancia").html(comboSustancias)
+
+    }
+
+    //seleccionar sustancia
+
+    function guardarSustancia(sus) {
+        if (sus != "") {
+            $("#sustanciaMed").val(sus)
+            $("#divMedicamento").attr("hidden", false);
+        }
+        else {
+            $("#sustanciaMed").val("")
+            $("#divMedicamento").attr("hidden", true);
+        }
+
+
+    }
+
+    $("#agregarMedi").submit(
+
+        function guardarMedicamento() {
+
+            var sustancia = $("#elegirSustancia").val();
+            var nombre = $("#Nombre").val();
+            var presentacion = $("#Presentacion").val();
+            var cantidad = $("#Cantidad").val();
+            var stock = $("#Stock").val();
+            var laboratorio = $("#Laboratorio").val();
+
+            if ($("#agregarMedi").valid() && sustancia != "" && sustancia != "undefined" && sustancia != null) {
+
+                 $("#btnAgregar").addClass("disabled");
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "AgregarMedicamento",
+                    data: { tratamiento: tratamiento, sustancia: sustancia, nombre: nombre, presentacion: presentacion, cantidad: cantidad, stock: stock, laboratorio: laboratorio },
+                    success: function(response) {
+                        response.result
+                        if (response.result == "error") {
+                            $("#modalMensajeMedicamento").html(response.mensaje);
+                            $("#msgMedicamento").modal('show');
+                            $("#btnAgregar").removeClass("disabled");
+                            
+                        }
+                        else {
+
+                            $("#modalMensajeMedicamento").html(response.mensaje);
+                             $("#agregarMedicamento").modal('hide');
+                            $("#msgMedicamento").modal('show');
+                            $("#btnAgregar").removeClass("disabled");
+                          
+                        }
+
+                    },
+                    error: function() {
+                        alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+                        $("#btnAgregar").removeClass("disabled");
+                    }
+                });
+            }
+            return false
+        }
+
+
+    );
+
+
+    function isNumberKey(evt, element) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if ((charCode < 48 || charCode > 57) && !(charCode == 46 || charCode == 8))
+            return false;
+        else {
+            var len = element.length
+            if (len == 0 && charCode == 46) return false;
+            if (charCode == 46 && element.includes(".")) return false;
+
+            var indexPunto = element.indexOf('.');
+
+
+            if (indexPunto > 0) {
+                let CharAfterdot = (len + 1) - indexPunto;
+                if (CharAfterdot > 3) {
+                    return false;
+                }
+
+            }
+
+        }
+        return true;
+    }
+</script>

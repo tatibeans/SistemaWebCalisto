@@ -1,0 +1,36 @@
+﻿
+@model MVC.Models.ViewModel.RecoveryPassViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="form-horizontal">
+        <div class="form-style">
+            <form action="@Url.Content("PassRecovery")" method="post">
+
+                @Html.HiddenFor(d => d.token)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(d => d.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(d => d.Password, null, new { style = "color:red" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PasswordRepeat, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(d => d.PasswordRepeat, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(d => d.PasswordRepeat, null, new { style = "color:red" })
+                    </div>
+                </div>
+
+
+                <div class="text-right">
+                    <button class="btn btn-primary">Recuperar</button>
+                </div>
+            </form>
+</div>
+    </div>
+</div>

@@ -1,0 +1,101 @@
+﻿@model List<MVC.Models.ModeloResidenteActualizar>
+
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Género
+        </th>
+        <th>
+            Dieta
+        </th>
+        <th>
+            Fecha de nacimiento
+        </th>
+        <th>
+            Mutualista
+        </th>
+        <th>
+            Servicio fúnebre
+        </th>
+        <th></th>
+    </tr>
+    <tbody id="tablaResidentes">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genero)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Dieta)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaNacimiento)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mutualista)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ServicioFunebre)
+                </td>
+                <td>
+                    <button type="button" onclick="Editar(@item.Cedula)" class="btn btn-success">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true">Editar</span>
+                    </button>
+
+                    <button type="button" onclick="VerDetallesResidente(@item.Cedula)" class="btn btn-success">
+                        <span class="glyphicon glyphicon-list" aria-hidden="true">Detalles</span>
+                    </button>
+                    <button type="button" onclick="location.href='@Url.Action("InformacionExtra", "Residente",new { ci = item.Cedula})'" class="btn btn-success">
+                        <span class="glyphicon glyphicon-bin" aria-hidden="true">Mas Info</span>
+                    </button>
+                    <button type="button" onclick="BorrarResidente(@item.Cedula)" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-bin" aria-hidden="true">Borrar</span>
+                    </button>
+
+                 
+                </td>
+            </tr>
+        }</tbody>
+
+</table>
+
+
+<div class="pager">
+    <nav aria-label="Page navigation">
+        <ul class="pagintation">
+            @for (int i = 1; i <= ViewBag.CantidadResidentes; i++)
+            {
+                if (i == 1)
+                {
+                    <li>
+                        <a href="#" aria-label="Previous" id="pag@i" onclick="GetPagina(@i)">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+
+                <li><a href="#" id="pag@i" onclick="GetPagina(@i)">@i</a></li>
+                if (i == ViewBag.CantidadResidentes)
+                {
+                    <li>
+                        <a href="#" aria-label="next" id="pag_@i" onclick="GetPagina(@i)">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>
+

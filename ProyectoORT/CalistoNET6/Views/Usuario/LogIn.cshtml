@@ -1,0 +1,198 @@
+﻿@model CalistoNET6.Models.ModeloLogin
+@using Newtonsoft.Json
+
+@{
+    Layout = null;
+
+}
+
+<div class="modal fade " id="olvidoPass" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="modalStarRecovery">
+        </div>
+
+    </div>
+</div>
+<div class="modal fade " id="mensajeUsuario" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Notificacion</h2>
+                <button type="button" class="btn-close align-middle" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMensajeUsuario">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade " id="errorLogin" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="btn-close align-middle" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="renderModalError">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Calisto</title>
+    <link href="css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body class="bg-primary">
+
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-5">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Ingresar</h3>             </div>
+                                <div class="card-body">
+
+                                    <form>
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="cedula" type="number" placeholder="14456760" />
+                                            <label for="inputEmail">Cédula</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="password" type="password" placeholder="Password" />
+                                            <label for="inputPassword">Contraseña</label>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
+                                            <a class="small" style="cursor:pointer;" onclick="olvidoPass()">¿Olvidó su contraseña?</a>
+                                            <a class="btn btn-primary" id="btnLogIn" onclick="Ingresar()">Ingresar</a>
+                                        </div>
+                                    </form>
+                                    
+                                    @if (ViewBag.Mensaje != null)
+                                    {
+                                        <span style="color: darkred; border: 2px solid darkred; padding: 5px;">
+                                            @ViewBag.Mensaje
+                                        </span>
+
+                                    }
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="js/scripts.js"></script>
+</body>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+
+</html>
+
+
+<script>
+
+
+
+
+    function olvidoPass() {
+
+        $.ajax({
+            type: "GET",
+            url: "Usuario/StartPassRecovery",
+            success: function(response) {
+
+                $("#modalStarRecovery").html(response);
+                $("#olvidoPass").modal('show');
+
+            },
+            error: function() {
+                alert("Ha habido un error.");
+                $("#btnRefresh").removeClass("disabled");
+            }
+        });
+
+    }
+
+
+    function Ingresar() {
+
+        $("#btnLogIn").addClass("disabled");
+        $("#btnLogIn").append(' <span class="spinner-border spinner-border-sm"></span>')
+
+        var ci = $("#cedula").val();
+        var pass = $("#password").val();
+
+        $.ajax({
+
+            type: "POST",
+            url: "Usuario/LogIn",
+            data: { cedula: ci, password: pass },
+            success: function(response) {
+                response.result
+                if (response.result == "error") {
+                    $("#renderModalError").html(response.mensaje);
+                    $("#errorLogin").modal('show');
+                    $("#btnLogIn").removeClass("disabled");
+
+                }
+                else {
+
+                    window.location.replace("Usuario/VistaUsuario");
+                }
+
+            },
+            error: function() {
+                alert("Ha habido un error.");
+                $("#btnLogIn").removeClass("disabled");
+                $("#btnLogIn").children("span").remove()
+            },
+            complete: function() {
+                $("#btnLogIn").removeClass("disabled");
+                $("#btnLogIn").children("span").remove()
+            }
+        })
+    }
+
+    function valid_numbers(e) {
+        var key = e.which || e.KeyCode;
+        if (key >= 48 && key <= 57)
+            return true;
+        else return false;
+    }
+
+</script>

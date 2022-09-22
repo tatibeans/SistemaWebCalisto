@@ -1,0 +1,99 @@
+﻿@model List<CalistoNET6.Models.ModeloResidenteActualizar>
+
+
+
+<table class="table text-center" >
+    <tr>
+        <th>
+            Nombre
+        </th>
+         <th>
+            Cedula
+        </th>
+        <th>
+            Género
+        </th>      
+        <th>
+            Fecha de nacimiento
+        </th>
+        <th>
+            Mutualista
+        </th>
+        @*<th>
+            Servicio fúnebre
+        </th>*@
+        <th>
+            Acciones
+        </th>
+    </tr>
+    <tbody id="tablaResidentes" class="table-striped text-center">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cedula)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genero)
+                </td>               
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaNacimiento)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mutualista)
+                </td>
+                @*<td>
+                    @Html.DisplayFor(modelItem => item.ServicioFunebre)
+                </td>*@
+                <td>
+                    <button type="button" onclick="Editar(@item.Cedula)" data-toggle="tooltip" data-placement="bottom" title="Editar" class="btn btn-success">
+                         <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                    <button type="button" onclick="VerDetallesResidente(@item.Cedula)" data-toggle="tooltip" data-placement="bottom" title="Ver detalles" class="btn btn-success">
+                         <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                    <button type="button" onclick="location.href='@Url.Action("InformacionExtra", "Residente",new { ci = item.Cedula})'" data-toggle="tooltip" data-placement="bottom" title="Más información" class="btn btn-success">
+                      <i class="fa-solid fa-list"></i>
+                    </button>
+                    <button type="button" onclick="BorrarResidente(@item.Cedula)" data-toggle="tooltip" data-placement="bottom" title="Eliminar" class="btn btn-danger">
+                          <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                 
+                </td>
+            </tr>
+        }</tbody>
+
+</table>
+
+
+<div class="pager">
+    <nav aria-label="Page navigation">
+        <ul class="pagintation">
+            @for (int i = 1; i <= ViewBag.CantidadResidentes; i++)
+            {
+                if (i == 1)
+                {
+                    <li>
+                        <a href="#" aria-label="Previous" id="pag@i" onclick="GetPagina(@i)">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+
+                <li><a href="#" id="pag@i" onclick="GetPagina(@i)">@i</a></li>
+                if (i == ViewBag.CantidadResidentes)
+                {
+                    <li>
+                        <a href="#" aria-label="next" id="pag_@i" onclick="GetPagina(@i)">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>
+

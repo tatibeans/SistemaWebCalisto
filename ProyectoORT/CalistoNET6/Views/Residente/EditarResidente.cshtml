@@ -1,0 +1,217 @@
+﻿@model CalistoNET6.Models.ModeloResidenteActualizar
+
+
+<div class="modal-header">
+    <h4>Editar datos del residente</h4>
+    <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+
+</div>
+<div class="modal-body">
+    <form asp-action="ActualizarResidente" id="formularioEditar" name="formularioEditar">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="Cedula" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="Cedula" id="ci" readonly class="form-control" onkeypress="return event.charCode >= 48 && event.charCode <= 57" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="Cedula" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="Nombre" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="Nombre" id="nom" class="form-control" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="Nombre" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="Genero" class="control-label"></label></div>
+            <div class="col-7 ">
+                @Html.DropDownListFor(model => model.Genero, new SelectList(Enum.GetValues(typeof(Dominio.Entidades.Genero))), "Seleccionar", new { @class = "form-control", @name = "txtGenero" })
+            </div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="Genero" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="Mutualista" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="Mutualista" id="mut" class="form-control" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="Mutualista" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="Dieta" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="Dieta" id="dieta" class="form-control" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="Mutualista" class="text-danger"></span></div>
+        </div>
+
+        <div class="row mt-2 form-group">
+            <div class="col-5 "><label asp-for="Alergias" class="control-label col-5"></label></div>
+
+            <div class="col-5">
+                <input type="text" class="form-control" id="ingresoAlergia" />
+            </div>
+
+            <div class="col-2 d-flex justify-content-end">
+                <button type="button" id="btnElegirAlergia" onclick="agregarAlergia()" class="btn btn-info" aria-hidden="true"><i class="fa-solid fa-plus"></i></button>
+
+            </div>
+        </div>
+
+        <div class="row mt-2 form-group">
+            <div class="col-7 offset-5 row" id="tablaAlergias">
+                @if (!string.IsNullOrEmpty(Model.Alergias))
+                {
+                    string[] aler = Model.Alergias.Split('|');
+                    foreach (string a in aler)
+                    {
+                        <div class="offset-1 mt-1">
+                            <label class="offset-1">
+                                <input type="checkbox" class="alerg ml-1" value="@a" checked />
+                                @a
+                            </label>
+                        </div>
+                    }
+                }
+            </div>
+
+        </div>
+
+        <div class="row mt-2 form-group">
+            <label asp-for="Condiciones" class="control-label col-5"></label>
+
+            <div class="col-5">
+                <input type="text" class="form-control" id="ingresoCondicion" />
+            </div>
+
+            <div class=" col-2 d-flex justify-content-end">
+                <button type="button" id="btnElegirCondicion" onclick="agregarCondicion()" class="btn btn-info" aria-hidden="true"><i class="fa-solid fa-plus"></i></button>
+
+            </div>
+        </div>
+
+        <div class="row mt-2 form-group">
+            <div class="col-7 offset-5 row" id="tablaCondiciones">
+                @if (!string.IsNullOrEmpty(Model.Condiciones))
+                {
+                    string[] cond = Model.Condiciones.Split('|');
+                    foreach (string c in cond)
+                    {
+                        <div class="offset-1 mt-1">
+                            <label>
+                                <input type="checkbox" class="condi ml-1" value="@c" checked />
+                                @c
+                            </label>
+                        </div>
+                    }
+                }
+            </div>
+
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="FechaNacimiento" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="FechaNacimiento" min="1800-01-01" max="@ViewBag.FechaHoy" type="date" class="form-control" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="FechaNacimiento" class="text-danger"></span></div>
+        </div>
+
+       
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="ServicioFunebre" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="ServicioFunebre" id="servFunebre" class="form-control" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="ServicioFunebre" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="ResponsableCI" class="control-label">Ci responsable</label></div>
+            <div class="col-5 ">  <input asp-for="ResponsableCI" id="txtRespCi" readonly class="form-control" /></div>
+            <div class="col-2 d-flex justify-content-start">
+                <buttton id="btnElegir" onclick="BuscarResponsables()" class="btn btn-info" aria-hidden="true">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </buttton>
+            </div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="ResponsableCI" class="text-danger"></span></div>
+
+        </div>
+
+
+
+        <input type="text" hidden id="listaAlergias" name="listaAlergias" />
+        <input type="text" hidden id="listaCondiciones" name="listaCondiciones" />
+
+
+        <div class="form-group mt-2">
+            <div class="modal-footer d-flex justify-content-end">
+                <button type="submit" class="btn btn-success">
+                    <span class="fa fa-save"></span>
+                    <span class="hidden-xs"> Guardar</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+
+
+    $.validator.unobtrusive.parse("#formularioEditar");
+
+
+    $("#formularioEditar").submit(function() {
+        if ($("#formularioEditar").valid()){
+        armarListas();
+        return true;
+      }
+      return false;
+    });
+
+
+
+    function isNumberKey(evt, element) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if ((charCode < 48 || charCode > 57) && !(charCode == 46 || charCode == 8))
+            return false;
+        else {
+            var len = element.length
+            if (len == 0 && charCode == 46) return false;
+            if (charCode == 46 && element.includes(".")) return false;
+
+            var indexPunto = element.indexOf('.');
+
+
+            if (indexPunto > 0) {
+                let CharAfterdot = (len + 1) - indexPunto;
+                if (CharAfterdot > 3) {
+                    return false;
+                }
+
+            }
+
+        }
+        return true;
+    }
+
+
+</script>

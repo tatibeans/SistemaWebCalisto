@@ -1,0 +1,219 @@
+﻿@model List<CalistoNET6.Models.ModeloSignoVital>
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+<div class="modal fade modal-lg" id="msgParaUsuario" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="CargarTodo()" data-toggle="tooltip" data-placement="bottom" title="Cerrar"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMensaje">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal" onclick="CargarTodo()" data-toggle="tooltip" data-placement="bottom" title="Aceptar">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editarSigno" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="modalEditar">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="borrarInsumo" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="modalBorrarInsumo">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="borrarEstudio" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="modalBorrarEstudio">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="borrarConsulta" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="modalBorrarConsulta">
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="borrarSigno" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="modalBorrar">
+        </div>
+    </div>
+</div>
+
+
+<ul class="nav nav-tabs mt-2" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#signos" type="button" role="tab" aria-controls="signos" aria-selected="true">Signos Vitales</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#insumos" type="button" role="tab" aria-controls="insumos" aria-selected="false">Insumos</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#estudios" type="button" role="tab" aria-controls="estudios" aria-selected="false">Estudios</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#consulta" type="button" role="tab" aria-controls="consulta" aria-selected="false">Consultas</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#tratamientos" type="button" role="tab" aria-controls="tratamientos" aria-selected="false">Tratamientos</button>
+    </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="signos" role="tabpanel" aria-labelledby="home-tab">
+        @{
+
+            await Html.RenderPartialAsync("TablaSignos", Model);
+        }
+
+
+    </div>
+    <div class="tab-pane fade" id="insumos" role="tabpanel" aria-labelledby="profile-tab">
+        <div class="tab-pane fade show active" id="insumos" role="tabpanel" aria-labelledby="home-tab">
+            @{
+
+                var insumos = ViewData["Insumos"];
+                if (insumos != null)
+                {
+
+                    await Html.RenderPartialAsync("TablaInsumos", insumos);
+                }
+
+
+            }
+        </div>
+    </div>
+    <div class="tab-pane fade" id="consulta" role="tabpanel" aria-labelledby="profile-tab">
+        <div class="tab-pane fade show active" id="consulta" role="tabpanel" aria-labelledby="home-tab">
+            @{
+
+                var consultas = ViewData["Consultas"];
+                if (consultas != null)
+                {
+
+                    await Html.RenderPartialAsync("TablaConsulta", consultas);
+                }
+
+
+            }
+        </div>
+    </div>
+    <div class="tab-pane fade" id="estudios" role="tabpanel" aria-labelledby="profile-tab">
+        <div class="tab-pane fade show active" id="estudios" role="tabpanel" aria-labelledby="home-tab">
+            @{
+
+                var estudios = ViewData["Estudios"];
+                if (estudios != null)
+                {
+
+                    await Html.RenderPartialAsync("TablaEstudios", estudios);
+                }
+
+
+            }
+        </div>
+    </div>
+
+
+    <div class="tab-pane fade" id="tratamientos" role="tabpanel" aria-labelledby="contact-tab">
+           <div class="tab-pane fade show active" id="tratamientos" role="tabpanel" aria-labelledby="home-tab">
+            @{
+
+                var tratamientos = ViewData["Tratamiento"];
+                if (tratamientos != null)
+                {
+
+                    await Html.RenderPartialAsync("TablaTratamientos", tratamientos);
+                }
+
+
+            }
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var ci;
+    function EditarSignoGet(idSig) {
+        
+        $.ajax({
+            type: "GET",
+            url: "EditarSigno",
+            data: { idSig: idSig },
+            success: function(response) {
+                
+                $("#modalEditar").html(response);
+                $("#editarSigno").modal('show');
+
+            },
+            error: function() {
+                alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+                $("#btnRefresh").removeClass("disabled");
+            }
+
+        });
+    }
+
+    function EditarSigno(idSig) {
+        $.ajax({
+            type: "POST",
+            url: "EditarSigno",
+            data: { idSig: idSig },
+            success: function(response) {
+
+                $("#modalMensaje").html(response);
+                $("#editarSigno").modal('hide');
+                $("#msgParaUsuario").modal('show');
+
+            },
+            error: function() {
+                alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+                $("#btnRefresh").removeClass("disabled");
+            }
+
+        });
+    }
+
+    function BorrarSigno(idSig) {
+        $.ajax({
+            type: "POST",
+            url: "BorrarSigno",
+            data: { idSig: idSig },
+            success: function(response) {
+
+
+                $("#borrarSigno").modal('show');
+                $("#modalEditar").html(response);
+            },
+            error: function() {
+                alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+                $("#btnRefresh").removeClass("disabled");
+            }
+
+        });
+    }
+</script>
+
+

@@ -1,0 +1,24 @@
+
+
+###############################################################################################
+###############################################################################################
+									COSAS PARA HACER
+###############################################################################################
+###############################################################################################
+
+
+Arreglar busqueda en index
+Arreglar Modals que quedaron
+Fecha en actualizar res
+Mover cosas en ingresar residente y actualizar
+
+Insumos y Tratamientos
+Insumos:
+Algunos tipos precargados
+Nombre, Tipo (y dar la posiblidad de agegar tipo nueuvo), Cantidad, Comentario.
+
+Tratamiento:
+Receta - un medicamento. Que se pueda editar la cantidad de pastillas, cantidad general
+
+cuando ingreso un tratamiento a la base, se ingresan todas las recetas y los medicamentos automáticamente?
+

@@ -1,0 +1,311 @@
+﻿@model CalistoNET6.Models.ModeloTratamiento
+@using CalistoNET6.Models;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
+
+<div class="modal fade" id="agregarReceta" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content" id="modalAgregar">
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="msgParaUsuario" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Operación exitosa</h3>
+                <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMensaje">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sucess" data-dismiss="modal" onclick="location.href='@Url.Action("InicioAgregarSigno", "Residente")'">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="msgError" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ocurrió un error</h3>
+                <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalError">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<h4 class="mt-2 mb-2">Agregar un tratamiento</h4>
+<hr />
+<div class="row">
+    <div @*class="col-md-6 offset-lg-3"*@>
+        <form asp-action="AgregarTratamiento" id="agregarTratamiento">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group row mt-2 ">
+                <div class="col-lg-2 ">  <label asp-for="CiFuncionario" class="control-label"></label></div>
+                <div class="col-lg-3 ">   <input asp-for="CiFuncionario" value="@Model.CiFuncionario" class="form-control" readonly /></div>
+
+            </div>
+
+            <div class="form-group row mt-2 ">
+                <div class="col-lg-2 "><label asp-for="CiResidente" class="control-label"></label></div>
+                <div class="col-lg-3 ">  <input asp-for="CiResidente" value="@Model.CiResidente" class="form-control" readonly /></div>
+
+            </div>
+
+            <div class="form-group row mt-2 ">
+                <div class="col-lg-2 "> <label asp-for="Medico" class="control-label"></label></div>
+                <div class="col-lg-3 ">  <input asp-for="Medico" class="form-control" id="txtMed" onkeypress="return esLetra(event, this)" /></div>
+
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="offset-5 col-6">  <span asp-validation-for="Medico" class="text-danger"></span></div>
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="col-lg-2 ">  <label asp-for="Descripcion" class="control-label"></label></div>
+                <div class="col-lg-3 ">  <input asp-for="Descripcion" class="form-control" id="txtDesc" onkeypress="return esLetra(event, this)" /></div>
+
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="offset-5 col-6">  <span asp-validation-for="Descripcion" class="text-danger"></span></div>
+            </div>
+
+            <div class="form-group row mt-2 ">
+                <div class="col-lg-2 "> <label asp-for="FechaComienzo" class="control-label"></label></div>
+                <div class="col-5 ">   <input asp-for="FechaComienzo" type="date" class="form-control" id="fechaCom" /></div>
+
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="offset-5 col-6">  <span asp-validation-for="FechaComienzo" class="text-danger"></span></div>
+            </div>
+            <hr />
+            <div class="form-group row mt-2 d-flex justify-content-end ">
+                <div class="col-5 row d-flex justify-content-center">
+                    @Html.LabelFor(model => model.Recetas, "Agregar receta", htmlAttributes: new { @class = "control-label col-6" })
+
+                    <button type="button" onclick="armarReceta()" class="btn btn-info col-2"
+                            data-toggle="tooltip" data-placement="bottom" title="Agregar receta">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                </div>
+
+
+
+            </div>
+
+            <div class="form-group row mt-2 d-flex justify-content-center ">
+                <table class="table table-striped mt-2" id="tableReceta" data-pagination="true" data-page-size="5">
+                    <thead>
+                        <tr>
+                            <th data-field="fechaEmision" data-formatter="operateFormatterFechaEmision">Emisión</th>
+                            <th data-field="fechaVencimiento" data-formatter="operateFormatterFechaVencimiento">Vencimiento</th>
+                            <th data-field="sustancia">Sustancia</th>
+                            <th data-field="dosis">Dosis</th>
+                            <th data-field="frecuencia">Frecuencia</th>
+                            <th data-field="duracion">Duración</th>
+
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+
+            <div class="modal-footer mt-2">
+                <button onclick="cancelarAgregarTratamiento()" type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <input type="submit" value="Confirmar" class="btn btn-primary" id="btnConfirmar" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $.validator.unobtrusive.parse("#agregarTratamiento");
+
+    });
+
+    function cancelarAgregarTratamiento() {
+        window.location.replace("InicioAgregarSigno")
+
+    }
+    var recetas = [];
+
+    var recetasParaPost = [];
+
+    function armarReceta() {
+
+        $.ajax({
+            type: "GET",
+            url: "AgregarReceta",
+            success: function (response) {
+                $("#agregarReceta").modal('show');
+                $("#modalAgregar").html(response);
+            }
+        });
+
+    }
+
+
+    function estaLaSustancia(sustancia) {
+        var esta = false;
+        if (!sustancia) return false;
+        for (let i = 0; i < recetas.length; i++) {
+            if (recetas[i]["sustancia"] == sustancia) {
+                esta = true;
+            }
+        }
+
+        return esta;
+
+    }
+
+
+    function llenarTabla(formulario) {
+
+        var receta = {
+            idReceta: 0,
+            idTratamiento: 0,
+            fechaIngreso: null,
+            fechaEmision: formulario["FechaEmision"],
+            fechaVencimiento: formulario["FechaVencimiento"],
+            sustancia: formulario["Sustancia"],
+            dosis: formulario["Dosis"],
+            frecuencia: formulario["Frecuencia"],
+            duracion: formulario["Duracion"]
+        };
+
+        if (receta.sustancia == "" || receta.sustancia == null || receta.sustancia == "undefined") {
+            return false;
+        }
+        else if (!(receta.fechaEmision == null || receta.duracion == 0 || (receta.sustancia != null
+            && (receta.dosis == 0 || receta.frecuencia == 0)))) {
+
+            var recPost = receta;
+
+            recetasParaPost.push(recPost);
+
+            var recTabla = receta;
+
+            recetas.push(recTabla);
+
+            $('#tableReceta').bootstrapTable("destroy");
+            $("#tableReceta").bootstrapTable({ data: recetas });
+            return true
+        }
+        return false;
+
+    }
+
+    $("#tableReceta").bootstrapTable({ data: recetas });
+
+    $("#agregarTratamiento").submit(function () {
+
+        agregarTrat();
+        return false;
+
+    })
+
+
+    function agregarTrat() {
+
+        $("#btnConfirmar").addClass("disabled");
+
+
+        var trat = {
+            IdTratamiento: 0,
+            CiFuncionario: @Model.CiFuncionario,
+            CiResidente: @Model.CiResidente,
+            Descripcion: $("#txtDesc").val(),
+            Medico: $("#txtMed").val(),
+            FechaComienzo: $("#fechaCom").val()
+        };
+        if (trat.Descripcion != null && trat.Descripcion != "" && trat.Medico != null
+            && trat.Medico != "") {
+            $.ajax({
+                type: "POST",
+                url: "AgregarTratamiento",
+                data: { mod: trat, rec: recetasParaPost },
+                success: function (response) {
+                    if (response.result == "success") {
+                        $("#modalMensaje").html(response.mensaje);
+                        $("#msgParaUsuario").modal('show');
+                    }
+                    else {
+                        $("#modalError").html(response.mensaje);
+                        $("#msgError").modal('show');
+                    }
+
+                },
+                error: function () { alert("Ha habido un error. Por favor, contáctese con el equipo de TI.") }
+            });
+        } else {
+            $("#modalError").html("Datos inválidos.");
+            $("#msgError").modal('show');
+        }
+
+        $("#btnConfirmar").removeClass("disabled");
+    }
+
+    function serializarRecetas(recs) {
+        var cadena = "";
+        for (i = 0; i < (recs.length - 1); i++) {
+            cadena += JSON.stringify(recs[i]) + "|";
+        }
+        cadena += JSON.stringify(recs[recs.length - 1]);
+        return cadena;
+    }
+
+    function ParseFecha(fecha) {
+
+        var fechaAParsear = fecha.split("/");
+        var fechaParseada = fechaAParsear[2] + "-" + fechaAParsear[1] + "-" + fechaAParsear[0];
+        return fechaParseada
+    }
+
+    function esLetra(evt, elemento) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if ((charCode < 97 || charCode > 122)//letras mayusculas
+            && (charCode < 65 || charCode > 90) //letras minusculas
+            && (charCode != 45) //retroceso
+            && (charCode != 241) //ñ
+            && (charCode != 209) //Ñ
+            && (charCode != 32) //espacio
+            && (charCode != 225) //á
+            && (charCode != 233) //é
+            && (charCode != 237) //í
+            && (charCode != 243) //ó
+            && (charCode != 250) //ú
+            && (charCode != 193) //Á
+            && (charCode != 201) //É
+            && (charCode != 205) //Í
+            && (charCode != 211) //Ó
+            && (charCode != 218) //Ú
+
+        ) return false;
+
+        return true;
+    }
+
+</script>

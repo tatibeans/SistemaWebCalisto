@@ -1,0 +1,181 @@
+﻿@model CalistoNET6.Models.ModeloReceta
+
+<link href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
+
+<div class="modal-header">
+    <h4 class="modal-tittle">Agregar una receta médica</h4>
+    <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+    <hr />
+</div>
+
+<div class="modal-body ">
+
+    <div>
+    <div>
+     <form asp-action="AgregarReceta" name="recetaAAgregar" id="recetaAAgregar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+             <div class="form-group row mt-2 ">
+                <div class="col-5 ">  <label asp-for="FechaEmision" class="control-label"></label></div>
+                    <div class="col-7 "> <input asp-for="FechaEmision" max="@ViewBag.FechaHoy" id="fchEmi" class="form-control" /></div>
+
+            </div>
+              <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="FechaEmision" class="text-danger"></span></div>
+                </div>
+           <div class="form-group row mt-2 ">
+                 <div class="col-5 "> <label asp-for="FechaVencimiento" class="control-label"></label></div>
+                <div class="col-7 "> <input asp-for="FechaVencimiento" disabled min="1800-01-01" max="3000-01-01" id="fchVen" class="form-control" /></div>
+
+            </div>
+            <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="FechaVencimiento" class="text-danger"></span></div>
+                </div>
+                 <div class="form-group row mt-2 ">
+                <div class="col-5 ">  <label asp-for="Dosis" class="control-label"></label></div>
+                    <div class="col-7 "><input asp-for="Dosis" type="text" class="form-control" onkeypress="return event.charCode >= 48 && event.charCode <= 57" /></div>
+            
+            </div>
+            <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="Dosis" class="text-danger"></span></div>
+                </div>
+
+        <div class="form-group row mt-2 ">
+                <div class="col-5 ">  <label asp-for="Frecuencia" class="control-label"></label></div>
+                    <div class="col-7 "><input asp-for="Frecuencia" type="text" class="form-control" onkeypress="return event.charCode >= 48 && event.charCode <= 57" /></div>
+           
+            </div>
+             <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="Frecuencia" class="text-danger"></span></div>
+                </div>
+         <div class="form-group row mt-2 ">
+                <div class="col-5 ">  <label asp-for="Duracion" class="control-label"></label></div>
+                    <div class="col-7 "> <input asp-for="Duracion" type="text" class="form-control" onkeypress="return event.charCode >= 48 && event.charCode <= 57" /></div>
+          
+            </div>
+              <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="Duracion" class="text-danger"></span></div>
+                </div>
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 ">  <label asp-for="Sustancia" class="control-label"></label></div>
+                    <div class="col-7 "> <input asp-for="Sustancia" class="form-control" onkeypress="return esLetra(event, this.value)" /></div>
+
+                </div>
+                <div class="form-group row mt-2 " >
+                    <div class="offset-5 col-6" id="sustanciaReceta"> </div>
+                </div>
+                  
+        
+            <div class="modal-footer mt-2">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <input type="submit" value="Agregar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+<script>
+
+    $.validator.unobtrusive.parse("#recetaAAgregar");
+
+    $("#fchEmi").on('change', function () {
+        var fechaMin = $("#fchEmi").val();
+        $("#fchVen").removeAttr('disabled');
+        $("#fchVen").attr({ "min": fechaMin });
+    })
+
+    
+    $("#Sustancia").on('change', function () {
+
+        var errorSpan = $("#sustanciaReceta")
+        errorSpan.html(' <span  asp-validation-for="Sustancia" class="text-danger">*La receta debe tener una sustancia</span>')
+        if ($("#Sustancia").val() == "" || $("#Sustancia").val() == "undefined" || $("#Sustancia").val() == null) {
+            errorSpan.html(' <span  asp-validation-for="Sustancia" class="text-danger">*La receta debe tener una sustancia</span>')
+     
+        }else
+        {
+            errorSpan.html('');
+        }
+    })
+
+
+
+    $("#recetaAAgregar").submit(function agregarReceta() {
+
+        var errorSpan = $("#sustanciaReceta")
+
+        var sus = $("#Sustancia").val();
+        var fechaVen = $("#fchVen").val();
+        var fechaEmi = $("#fchEmi").val();
+
+        var receta = {
+
+            FechaEmision: fechaEmi,
+            FechaVencimiento: fechaVen,
+            Sustancia: sus,
+            Dosis: $("#Dosis").val(),
+            Frecuencia: $("#Frecuencia").val(),
+            Duracion: $("#Duracion").val()
+        }
+
+        if (sus == "" || sus == null || sus == "undefined") {
+            errorSpan.html(' <span  asp-validation-for="Sustancia" class="text-danger">*La receta debe tener una sustancia</span>')
+            return false;
+        }
+        else if (estaLaSustancia(sus)) {
+            
+            var errorSpan = $("#sustanciaReceta")
+            errorSpan.html(' <span  asp-validation-for="Sustancia" class="text-danger">*La sustancia no se puede repetir en el tratamiento</span>')
+        } else {
+            if (llenarTabla(receta)){
+                $("#agregarReceta").modal('hide')
+            } else {
+                $("#modalError").html("Verifique los datos.");
+                $("#msgError").modal('show');
+            }
+            
+
+        }
+
+        return false;
+    });
+
+    function esLetra(evt, elemento){
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if ((charCode < 97 || charCode > 122)//letras mayusculas
+            && (charCode < 65 || charCode > 90) //letras minusculas
+            && (charCode != 45) //retroceso
+            && (charCode != 241) //ñ
+            && (charCode != 209) //Ñ
+            && (charCode != 32) //espacio
+            && (charCode != 225) //á
+            && (charCode != 233) //é
+            && (charCode != 237) //í
+            && (charCode != 243) //ó
+            && (charCode != 250) //ú
+            && (charCode != 193) //Á
+            && (charCode != 201) //É
+            && (charCode != 205) //Í
+            && (charCode != 211) //Ó
+            && (charCode != 218) //Ú
+
+        ) return false;
+
+        return true;
+    }
+
+
+    function isNumberKey(evt, element) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if ((charCode < 48 || charCode > 57) && !charCode == 8) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>
+

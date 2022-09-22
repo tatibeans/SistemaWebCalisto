@@ -1,0 +1,229 @@
+﻿@model CalistoNET6.Models.ModeloSignoVital
+
+
+
+<div class="modal-header">
+    <h4 class="modal-tittle">Editar registro</h4>
+</div>
+
+
+    <div class="modal-body ">
+    <form asp-action="EditarSigno" id="formularioEditarSigno" name="formularioEditarSigno">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+      
+            <div class="form-group row mt-2 ">
+                <div class="col-5 "> <label asp-for="PresionMinima" class="control-label"></label></div>
+                <div class="col-7 ">   <input asp-for="PresionMinima" id="PresionMinima" max=""class="form-control" onkeypress="return event.charCode >= 48 && event.charCode <= 57 && this.value.length <2 " /></div>
+
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="offset-5 col-6">  <span asp-validation-for="PresionMinima" id="msgPMin" class="text-danger"></span></div>
+            </div>
+          
+            <div class="form-group row mt-2 ">
+                <div class="col-5 "> <label asp-for="PresionMaxima" class="control-label"></label></div>
+            <div class="col-7 ">   <input asp-for="PresionMaxima" id="PresionMaxima" min="" class="form-control" onkeypress="return event.charCode >= 48 && event.charCode <= 57 && this.value.length <2 " /></div>
+
+            </div>
+            <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="PresionMaxima" id="msgPMax" class="text-danger"></span></div>
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="col-5 "> <label asp-for="Azucar" class="control-label"></label></div>
+            <div class="col-7 ">   <input asp-for="Azucar" id="Azucar" class="form-control" onkeypress="return isNumberKey(event, this.value)" /></div>
+
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="offset-5 col-6">  <span asp-validation-for="Azucar" class="text-danger"></span></div>
+            </div>
+
+            <div class="form-group row mt-2 ">
+                <div class="col-5 "> <label asp-for="Oxigeno" class="control-label"></label></div>
+            <div class="col-7 ">   <input asp-for="Oxigeno" id="Oxigeno" class="form-control" onkeypress="return isNumberKey(event, this.value)" /></div>
+
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="offset-5 col-6">  <span asp-validation-for="Oxigeno" class="text-danger"></span></div>
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="col-5 "> <label asp-for="Temperatura" class="control-label"></label></div>
+            <div class="col-7 ">   <input asp-for="Temperatura" id="Temperatura" class="form-control" onkeypress="return isNumberKey(event, this.value)" /></div>
+
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="offset-5 col-6">  <span asp-validation-for="Temperatura" class="text-danger"></span></div>
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="col-5 "> <label asp-for="Pulso" class="control-label"></label></div>
+            <div class="col-7 ">   <input asp-for="Pulso" id="Pulso" class="form-control" onkeypress="return event.charCode >= 48 && event.charCode <= 57 && this.value.length <3 " /></div>
+
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="offset-5 col-6">  <span asp-validation-for="Pulso" class="text-danger"></span></div>
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="col-5 "> <label asp-for="Comentario" class="control-label"></label></div>
+                <div class="col-7 ">   <input asp-for="Comentario" id="Comentario" class="form-control"/></div>
+
+            </div>
+            <div class="form-group row mt-2 ">
+                <div class="offset-5 col-6">  <span asp-validation-for="Comentario" class="text-danger"></span></div>
+            </div>
+
+        <input asp-for="IdSignoVital" id="IdSignoVital" hidden class="form-control" />
+        <input asp-for="IdSignoVital" id="CiFuncionario" hidden class="form-control" />
+        <input asp-for="IdSignoVital" id="FechaRegistro" hidden class="form-control" />
+       <input asp-for="CiResidente" id="CiRes" hidden class="form-control" />
+
+
+
+            <div class="form-group  row mt-2">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        <span class="hidden-xs">Cerrar</span>
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        <span class="fa fa-save"></span>
+                        <span class="hidden-xs"> Guardar</span>
+                    </button>
+
+                </div>
+
+
+            </div>
+        </form>
+
+    </div>
+
+<script>
+     $(document).ready(function () {
+        $.validator.unobtrusive.parse("#formularioEditarSigno");
+        var min = $("#PresionMinima").val();
+        min++;
+        var max = $("#PresionMaxima").val();
+        max--;
+        $("#PresionMaxima").attr({ "min": min});
+        $.validator.messages.min = 'Debe ser mayor a la presión minima ';
+        $("#PresionMinima").attr({ "max": max });
+        $.validator.messages.max = 'Debe ser menor a la presión maxima';
+        if($("#Azucar").val()==0)
+        {
+            $("#Azucar").val("");
+        }
+        if($("#PresionMaxima").val()==0)
+        {
+            $("#PresionMaxima").val("");
+        }
+        if ($("#PresionMinima").val() == 0) {
+            $("#PresionMinima").val("");
+        }
+        if($("#Oxigeno").val()==0)
+        {
+            $("#Oxigeno").val("");
+        }
+        if($("#Temperatura").val()==0)
+        {
+            $("#Temperatura").val("");
+        }
+        if ($("#Pulso").val() == 0) {
+            $("#Pulso").val("");
+        }
+    });
+
+    $("#PresionMinima").on('change', function () {
+        var min = $("#PresionMinima").val()
+        min ++;
+   
+        $("#PresionMaxima").attr({ "min": min });
+        if ($("#PresionMinima").val() < $("#PresionMaxima").val()) {
+            $("#msgPMin").html("");
+            $("#msgPMax").html("");
+        }
+    })
+    $("#PresionMaxima").on('change', function () {
+        var max = $("#PresionMaxima").val();
+        max--;
+        $("#PresionMinima").attr({ "max": max});
+        if ($("#PresionMinima").val() < $("#PresionMaxima").val()) {
+            $("#msgPMin").html("");
+            $("#msgPMax").html("");
+        }
+    })
+
+    var baja = 0;
+    var alta = 0;
+
+
+    function armarPresion() {
+         baja = Number($("#PresionMinima").val());       
+         alta = Number($("#PresionMaxima").val());
+  
+        if ((baja && !alta) || (!baja && alta)) return false;
+        if (baja < 0 || alta < 0) return false;
+        if (baja > alta) return false;
+        if (baja > 30 || alta > 30) return false;
+        if (isNaN(baja) || isNaN(alta)) {
+            baja = 0;
+            alta = 0;
+        }
+        return true;
+    }
+
+    function isNumberKey(evt, element) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if ((charCode < 48 || charCode > 57) && !(charCode == 46 || charCode == 8))
+            return false;
+        else {
+            var len = element.length
+            if (len == 0 && charCode == 46) return false;
+            if (charCode == 46 && element.includes(".")) return false;
+
+            var indexPunto = element.indexOf('.');
+
+
+            if (indexPunto > 0) {
+                let CharAfterdot = (len + 1) - indexPunto;
+                if (CharAfterdot > 3) {
+                    return false;
+                }
+
+            }
+
+        }
+        return true;
+    }
+
+    function arreglarNulos(){
+        let azucarNula = Number($("#Azucar").val()) == 0 || $("#Azucar").val() == "0";
+        let oxigenoNulo = Number($("#Oxigeno").val()) == 0 || $("#Oxigeno").val() == "0";
+        let tempNula = Number($("#Temperatura").val()) == 0 || $("#Temperatura").val() == "0";
+        let pulsoNulo = Number($("#Pulso").val()) == 0 || $("#Pulso").val() == "0";
+        let presionNula = (Number($("#PresionMinima").val()) == 0 || $("#PresionMinima").val() == "0")
+            && (Number($("#PresionMaxima").val()) == 0 || $("#PresionMaxima").val() == "0")
+        if (azucarNula) $("#Azucar").val(null);
+        if (oxigenoNulo) $("#Oxigeno").val(null);
+        if (tempNula) $("#Temperatura").val(null);
+        if (pulsoNulo) $("#Pulso").val(null);
+
+        if (oxigenoNulo && azucarNula && tempNula && pulsoNulo && presionNula) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    $("#formularioEditarSigno").submit(function () {
+        if (arreglarNulos() && armarPresion() && $("#formularioEditarSigno").valid()) {
+            $("#CiRes").val(ci);
+            
+          return true;
+        }
+      
+        return false;
+    })
+
+
+   
+</script>

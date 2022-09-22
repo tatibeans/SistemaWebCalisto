@@ -1,0 +1,102 @@
+﻿@model List<CalistoNET6.Models.ModeloResSignos>
+
+<table class="table">
+    <tr>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Cédula
+        </th>
+        <th class="col-auto">
+            Género
+        </th>
+        <th></th>
+    </tr>
+    <tbody id="tablaResidentes">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                 <td>
+                    @Html.DisplayFor(modelItem => item.Cedula)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genero)
+                </td>
+                <td>
+                    <button type="button" onclick="AgregarSigno(@item.Cedula)" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Agregar signo vital">
+                       <i class="fa-solid fa-heart-pulse"></i>
+                    </button>
+                    <button type="button" onclick="location.href='@Url.Action("AgregarTratamiento", "Residente",new { cedula = item.Cedula})'" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Agregar tratamiento">
+                       <i class="fa-solid fa-file-medical"></i>
+                    </button>
+                    
+                    
+                    <button type="button" onclick="location.href='@Url.Action("InformacionExtra", "Residente",new { ci = item.Cedula})'" class="btn btn-success"
+                    data-toggle="tooltip" data-placement="bottom" title="Más información">
+                     <i class="fa-solid fa-circle-info"></i>
+                    </button>
+                    
+
+                    @*voy a poner medicamento en el dropdown xq no se usa todos los días, 
+                    es un modal y no quiero 5 íconos en la tabla*@
+                    <span class="dropdown">
+                        <button class="btn btn-success dropdown-toggle"type="button" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                        <span class="dropdown-menu" style="border: 1px solid grey;">
+                            <button type="button" onclick="AgregarMedicamento(@item.Cedula)" class="btn btn-success dropdown-item">
+                                Agregar stock de un medicamento
+                            </button>
+                            <button type="button" onclick="AgregarInsumo(@item.Cedula)" class="btn btn-success dropdown-item">
+                                Agregar un insumo personal
+                            </button>
+                            <button type="button" onclick="AgregarConsulta(@item.Cedula)" class="btn btn-success dropdown-item">
+                                Registrar una consulta médica
+                            </button>
+                            <button type="button" onclick="AgregarEstudio(@item.Cedula)" class="btn btn-success dropdown-item">
+                                Registrar un estudio médico
+                            </button>
+                        </span>
+                    </span>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+
+<div class="pager">
+    <nav aria-label="Page navigation">
+        <ul class="pagintation">
+            @for (int i = 1; i <= ViewBag.CantidadResidentes; i++)
+            {
+                if (i == 1)
+                {
+                    <li>
+                        <a href="#" aria-label="Previous" id="pag@i" onclick="GetPagina(@i)">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+
+                <li><a href="#" id="pag@i" onclick="GetPagina(@i)">@i</a></li>
+                if (i == ViewBag.CantidadResidentes)
+                {
+                    <li>
+                        <a href="#" aria-label="next" id="pag_@i" onclick="GetPagina(@i)">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>
+
+

@@ -1,0 +1,134 @@
+﻿@model List<MVC.Models.ModeloResSignos>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*agregar signo*@
+<div id="agregarSigno" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalSigno">
+
+        </div>
+    </div>
+</div>
+
+
+@*mensaje usuario*@
+<div class="modal fade modal-lg" id="msgParaUsuario" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="CargarTodo()"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMensaje">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="CargarTodo()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*lista residentes*@
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h3>Lista de residentes</h3>
+    </div>
+
+    <div class="panel-body">
+        <div style="margin-bottom: 8px;">
+            <div class="form-group row ">
+
+                <div class="col-md-6">
+                    <label for="cedula" class="col-md-2">Usuario</label>
+                    <input type="text" id="textoBusquedaIndex1" name="textoBusquedaIndex1" class="form-control" onkeyup="buscar('index1')">
+                </div>
+                <button id="btnRefresh" class="btn btn-default " onclick="CargarTodo()">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                </button>
+            </div>
+
+
+        </div>
+        <div id="divResidentes">
+            @{
+                Html.RenderPartial("TablaResSignos", Model);
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    function CargarTodo() {
+        $("#btnRefresh").addClass("disabled");
+
+        $.ajax({
+            type: "GET",
+            url: "Residente/GetTodos",
+            success: function (response) {
+                $("#divResidentes").html(response);
+                $("#btnRefresh").removeClass("disabled");
+            },
+            error: function () {
+                alert("Ha habido un error.");
+                $("#btnRefresh").removeClass("disabled");
+            }
+        })
+    }
+
+    function PrimeraCarga() {
+        $.ajax({
+            type: "GET",
+            url: "Residente/GetTodosParaSignos",
+            success: function (response) {
+                $("#divResidentes").html(response);
+
+                $("#agregarSigno").modal("hide");
+                $("#msgParaUsuario").modal("hide");
+
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+            }
+        })
+    }
+
+    function GetPagina(pagina) {
+        $.ajax({
+            type: "GET",
+            url: "AgregaSignoRes",
+            data: { indicePag: pagina },
+            success: function (response) {
+                $("#divResponsables").html(response);
+            }
+        });
+    }
+
+    function AgregarSigno(cedula) {
+
+        $.ajax({
+            type: "GET",
+            url: "AgregarSigno",
+            data: { cedula: cedula },
+            success: function (response) {
+
+                $("#modalSigno").html(response);
+                $("#agregarSigno").modal('show');
+
+            },
+            error: function () {
+                alert("Ha habido un error.");
+            }
+        });
+
+    }
+
+   
+
+
+</script>

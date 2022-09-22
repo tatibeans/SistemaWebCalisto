@@ -1,0 +1,824 @@
+﻿@model IEnumerable<CalistoNET6.Models.ModeloTratamiento>
+
+<link href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/locale/bootstrap-table-es-AR.min.js"></script>
+<div id="detalleMedicamento" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="align-left">Medicamento</h4>
+                <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMedicamento">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*ModalAgregarReceta*@
+<div id="AgregarReceta" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="ModalAgregarReceta">
+        </div>
+    </div>
+</div>
+
+@*ModalExito*@
+<div id="Exito" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="ModalExito">
+        </div>
+    </div>
+</div>
+@*ModalError*@
+<div id="Error" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="ModalError">
+        </div>
+    </div>
+</div>
+
+
+@*ModalBorrar*@
+<div id="Borrar" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="ModalBorrar">
+        </div>
+    </div>
+</div>
+
+@*Modal Editar*@
+<div id="Editar" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="ModalEditar">
+            <div class="modal-header">
+                <h4 class="align-left">Medicamento</h4>
+                <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div id="ModalEditar">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="Tratamientos"><h4 class="pt-1">Tratamientos</h4></div>
+<table id="tableTratamiento" data-toolbar="#Tratamientos" data-pagination="true" data-page-size="5" data-search="ture" data-sortable="true">
+    <thead>
+        <tr>
+            <th data-sortable="true" data-visible="false" data-field="idTratamiento">Id</th>
+            <th data-sortable="true" data-visible="false" data-field="recetas">Recetas</th>
+            <th data-sortable="true" data-field="ciResidente">Residente</th>
+            <th data-sortable="true" data-field="ciFuncionario">Funcionario</th>
+            <th data-sortable="true" data-field="medico">Médico</th>
+            <th data-sortable="true" data-field="descripcion">Descripción</th>
+            <th data-sortable="true" data-field="fechaComienzo">Fecha de inicio</th>
+            <th data-sortable="true" data-field="fechaFin">Fecha de fin</th>
+            <th data-field="BorrarTratamiento" data-formatter="operateFormatterBorrarTratamiento">Borrar</th>
+            <th data-field="EditarTratamiento" data-formatter="operateFormatterEditarTratamiento">Editar</th>
+        </tr>
+    </thead>
+</table>
+
+
+<div id="Recetas"><h4 class="pt-1">Recetas<button type="button" hidden class="btn btn-sm btn-primary fa-solid fa-plus" id="botonRecetaAgregar" onclick="agregarReceta()"></button></h4></div>
+
+<table class="mt-2" id="tableRec" data-toolbar="#Recetas" data-pagination="true" data-page-size="5" data-sortable="true" data-search="true">
+    <thead>
+        <tr>
+            <th data-sortable="true" data-visible="false" data-field="idReceta">Id</th>
+            <th data-sortable="true" data-field="sustancia">Sustancia</th>
+            <th data-sortable="true" data-field="duracion">Duración (días)</th>
+            <th data-sortable="true" data-field="frecuencia">Frecuencia (horas)</th>
+            <th data-sortable="true" data-field="dosis">Dosis (mg / mL / sesiones)</th>
+            <th data-sortable="true" data-field="fechaEmision">Fecha de emisión</th>
+            <th data-sortable="true" data-field="fechaVencimiento">Fecha de vencimiento</th>
+            <th data-field="BorrarRecetas" data-formatter="operateFormatterBorrarReceta">Borrar</th>
+          
+        </tr>
+    </thead>
+</table>
+
+
+<div id="Medicamentos"><h4 class="pt-1">Medicamentos<button type="button" hidden class="btn btn-sm btn-primary fa-solid fa-plus"></button></h4></div>
+
+<table class="mt-2" id="tableMed" data-toolbar="#Medicamentos" data-pagination="true" data-page-size="5" data-sortable="true" data-search="true">
+    <thead>
+        <tr>
+            <th data-sortable="true" data-visible="false" data-field="idMedicamento">Id</th>
+            <th data-sortable="true" data-field="sustancia">Sustancia</th>
+            <th data-sortable="true" data-field="nombre">Nombre</th>
+            <th data-sortable="true" data-field="presentacion">Presentación (mg / mL)</th>
+            <th data-sortable="true" data-field="cantidad">Cantidad por empaque</th>
+            <th data-sortable="true" data-field="stock">Stock</th>
+            <th data-sortable="true" data-field="laboratorio">Laboratorio</th>
+            <th data-sortable="true" data-field="fechaInicioStock" data-formatter="operateFormatterFechaInicioStock">Fecha Inicio Stock</th>
+            <th data-sortable="true" data-field="fechaFinStock" data-formatter="operateFormatterFechaFinStock">Fecha Fin Stock</th>
+            <th data-field="BorrarMedicamento" data-formatter="operateFormatterBorrarMedicamento">Borrar</th>
+
+
+        </tr>
+    </thead>
+</table>
+
+
+
+<script>
+    var d = new Date().getDate();
+    var m = new Date().getMonth() + 1;
+    var y = new Date().getFullYear();
+    var fecha = armarFecha();
+    var click
+    function armarFecha() {
+        if (m < 10) {
+            return d + "/" + "0" + m + "/" + y
+        }
+        else {
+            return d + "/" + m + "/" + y
+        }
+
+    }
+    var table = $('#tableTratamiento')
+    var tableRece = $('#tableRec')
+    var tableMed = $('#tableMed')
+    var data4 = @Html.Raw(Json.Serialize(@Model));
+    table.bootstrapTable({ data: data4 })
+    tableRece.bootstrapTable();
+    tableMed.bootstrapTable();
+    var rowSelected = null;
+     var ciRes;
+    if(data4.length>0)
+    {
+        ciRes=data4[0].ciResidente
+    }
+   
+    var idTrat;
+    var recetas;
+    var medicamentosAgrupados = new Array;
+    var medicamentoParaBorrar;
+
+    $("#tableTratamiento").on("click-row.bs.table", function(field, value, row, $el) {
+       ciRes= value.ciResidente;
+        $("#botonRecetaAgregar").removeAttr('hidden');
+        idTrat = value.idTratamiento;
+        rowSelectedRec = null;
+
+        if (rowSelected != null) {
+            rowSelected.removeClass('bg-info');
+        } 
+        else if ($el == "EditarTratamiento") {
+
+            $.ajax({
+                type: "GET",
+                url: "EditTratamientoDesdeTabla",
+                data: { id: idTrat },
+                success: function(response) {
+                    $("#ModalEditar").html(response);
+                    $("#Editar").modal('show');
+                }
+            });
+
+        }
+        else if(!$el =="BorrarTratamiento") {}
+            medicamentosAgrupados = new Array;
+
+            for (var i = 0; i < value.recetas.length; i++) {
+
+                medicamentosAgrupados.push(value.recetas[i].sustancia)
+                medicamentosAgrupados[i] = new Array;
+
+                for (var j = 0; j < value.medicamentos.length; j++) {
+
+                    if (value.recetas[i].sustancia == value.medicamentos[j].sustancia) {
+
+                        medicamentosAgrupados[i].push(value.medicamentos[j])
+
+                    }
+                }
+            }
+            recetas = value.recetas;
+            tableRece.bootstrapTable("destroy");
+            tableRece.bootstrapTable({ data: recetas });
+
+            tableMed.bootstrapTable('destroy');
+            tableMed.bootstrapTable();
+          
+        
+        
+    })
+
+
+    function BorrarTratamientoMostrar(idTratamiento) {
+        var value;
+        for(let i = 0; i < data4.length; i++)
+        {
+            var idTratAhora = data4[i]["idTratamiento"];
+            
+            if(idTratAhora== idTratamiento)
+            {
+                value = data4[i];
+            }
+        
+        }
+       
+        $("#ModalBorrar").html(`<div class="modal-header">
+                                                        <h4 class="align-left">Borrar tratamiento</h4>
+                                                        <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div id="modalBorrar">
+                                                          <div class="form-group">
+                                                        <label asp-for="idTratamiento" class="control-label">Id del tratamiento</label>
+                                                        <input asp-for="idTratamiento" class="form-control" readonly value="${value.idTratamiento}"/>
+                                                        <span asp-validation-for="idTratamiento" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label asp-for="medico" class="control-label">Médico</label>
+                                                        <input asp-for="medico" class="form-control"  readonly value="${value.medico}" />
+                                                        <span asp-validation-for="medico" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label asp-for="descripcion" class="control-label">Descripción</label>
+                                                        <input asp-for="descripcion" class="form-control" readonly value="${value.descripcion}" />
+                                                        <span asp-validation-for="descripcion" class="text-danger" ></span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label asp-for="fechaComienzo" class="control-label">Fecha de comienzo</label>
+                                                        <input asp-for="fechaComienzo" class="form-control" readonly value="${value.fechaComienzo}" />
+                                                        <span asp-validation-for="fechaComienzo" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label asp-for="fechaFin" class="control-label">Fecha de fin</label>
+                                                        <input asp-for="fechaFin" class="form-control" readonly value="${value.fechaFin}" />
+                                                        <span asp-validation-for="fechaFin" class="text-danger"></span>
+                                                    </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-danger" onclick="BorrarTratamiento(${value.idTratamiento},${ciRes})" >Borrar</button>
+                                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                                                    </div>`);
+        $("#Borrar").modal('show')
+
+    }
+
+    var rowSelectedRec = null;
+
+    $("#tableRec").on("click-row.bs.table", function(field, value, row, $el) {
+        if (rowSelectedRec != null) {
+            rowSelectedRec.removeClass('bg-info');
+        }
+
+        var medicamentosDeSustancia = null;
+        for (let i = 0; i < medicamentosAgrupados.length; i++) {
+            if (medicamentosAgrupados[i].length > 0) {
+                if (medicamentosAgrupados[i][0]["sustancia"] == value.sustancia) {
+
+                    medicamentosDeSustancia = medicamentosAgrupados[i];
+                }
+            }
+        }
+
+        if (medicamentosDeSustancia != null) {
+            medicamentoParaBorrar = medicamentosDeSustancia[medicamentosDeSustancia.length - 1]["idMedicamento"];
+            tableMed.bootstrapTable('destroy');
+            tableMed.bootstrapTable({ data: medicamentosDeSustancia });
+        } else {
+
+            tableMed.bootstrapTable('destroy');
+            tableMed.bootstrapTable();
+        }
+    })
+     
+
+    // FORMATTERS TRATAMIENTO
+    function operateFormatterBorrarTratamiento(value, row, index) {
+         
+        if (row.medicamentos.length > 0) {
+            return [
+               '<div class="text-center">',
+                '<a class="text-center" href="javascript:void(0)" title="Cancel">',
+                '<i class="fa fa-ban"></i>',
+                '</a>',
+                '</div>'
+            ].join('')
+        } else {           
+            return [
+                `<div class="text-center">`,
+                `<a class="remove text-center" href="javascript:void(0)" onclick="BorrarTratamientoMostrar(${row.idTratamiento})" title="Remove">`,
+                `<i class="fa fa-trash"></i>`,
+                `</a>`,
+                `</div>`               
+            ].join('')
+        }
+    }
+
+    function operateFormatterEditarTratamiento(value, row, index) {
+        return [
+            '<div class="text-center">',
+            '<a class="edit text-center" href="javascript:void(0)" title="Edit">',
+            '<i class="fa fa-pen-to-square"></i>',
+            '</a>',
+            '</div>'
+        ].join('')
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+     // FORMATTERS MEDICAMENTOS
+    function operateFormatterBorrarMedicamento(value, row, index) {
+
+        if (medicamentoParaBorrar != row.idMedicamento) {
+            return [
+               '<div class="text-center">',
+                '<a class="text-center" href="javascript:void(0)" title="Cancel">',
+                '<i class="fa fa-ban"></i>',
+                '</a>',
+                '</div>'
+            ].join('')
+        } else {           
+            return [
+                `<div class="text-center">`,
+                `<a class="remove text-center" href="javascript:void(0)" onclick="BorrarMedicamentoInicio()" title="Remove">`,
+                `<i class="fa fa-trash"></i>`,
+                `</a>`,
+                `</div>`               
+            ].join('')
+        }
+    }
+   
+     function operateFormatterFechaInicioStock(value, row, index) {
+         var fechaInicio = row.fechaInicioStock.substring(0,10)        
+         var fechaInicioArray = fechaInicio.split("-")
+         fechaInicio = fechaInicioArray[2]+"/" + fechaInicioArray[1]+"/" +fechaInicioArray[0]
+        return [
+            `<div class="text-center"> ${fechaInicio} </div>`
+        ].join('')
+    }
+
+    function operateFormatterFechaFinStock(value, row, index) {
+        var fechaFin = row.fechaFinStock.substring(0,10)
+         var fechaFinArray = fechaFin.split("-")
+        fechaFin = fechaFinArray[2] + "/" + fechaFinArray[1] + "/" + fechaFinArray[0]
+   
+        return [
+            `<div class="text-center"> ${fechaFin} </div>`
+        ].join('')
+    }
+
+    ////////////////////////////////////////////////////////////////
+
+    //FORMATTERS RECETA
+    function operateFormatterBorrarReceta(value, row, index) {
+
+
+        var sePuedeBorrar = true;
+        for (let i = 0; i < medicamentosAgrupados.length; i++) {
+            if (medicamentosAgrupados[i].length > 0) {
+                if (medicamentosAgrupados[i][0]["sustancia"] == row.sustancia) {
+                    sePuedeBorrar = false;
+                }
+            }
+        }
+        if (!sePuedeBorrar) {
+           return [
+               '<div class="text-center">',
+                '<a class="text-center" href="javascript:void(0)" title="Cancel">',
+                '<i class="fa fa-ban"></i>',
+                '</a>',
+                '</div>'
+            ].join('')
+        } else {           
+            return [
+                `<div class="text-center">`,
+                `<a class="remove text-center" href="javascript:void(0)" onclick="BorrarRecetaInicio(${row.idReceta})" title="Remove">`,
+                `<i class="fa fa-trash"></i>`,
+                `</a>`,
+                `</div>`               
+            ].join('')
+        }
+    }
+
+    function operateFormatterEditarReceta(value, row, index) {
+        return [
+            '<div class="text-center">',
+            '<a class="edit text-center" href="javascript:void(0)" title="Edit">',
+            '<i class="fa fa-pen-to-square"></i>',
+            '</a>',
+            '</div>'
+        ].join('')
+    }
+  ////////////////////////////////////////////////////////////////////////////////////
+
+
+  // FUNCIONES DE TRATAMIENTOS
+    function BorrarTratamiento(id, cedula) {
+
+        $.ajax({
+            type: "POST",
+            url: "EliminarTratamiento",
+            data: { idTrat: id },
+            success: function(response) {
+                if (response.result == "success") {
+
+                    $("#Borrar").modal('hide');
+                    $("#ModalExito").html(`<div class="modal-header">
+                                           <h4 class="align-left">Operación exitosa</h4>
+                                           <button type="button" class="btn-close align-right" onclick='location.href="/Residente/InformacionExtra?ci=${cedula}"' aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                           </div>
+                                           <div class="modal-body">
+                                           <div>
+                                           <p>${response.mensaje}</p>
+                                           </div>
+                                           </div>
+                                           <div class="modal-footer">
+                                           <button type="button" class="btn btn-primary" onclick='location.href="/Residente/InformacionExtra?ci=${cedula}"'>Aceptar</button>
+                                            </div>`);
+                    $("#Exito").modal('show');
+                }
+                if (response.result == "error") {
+                    $("#Borrar").modal('hide');
+                    $("#ModalError").html(`<div class="modal-header">
+                                           <h4 class="align-left">Ha ocurrido un error</h4>
+                                           <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                           </div>
+                                           <div class="modal-body">
+                                           <div>
+                                           <p>${response.mensaje}</p>
+                                           </div>
+                                           </div>
+                                           <div class="modal-footer">
+                                           <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Aceptar</button>
+                                           </div>`);
+                    $("#Error").modal('show');
+                }
+
+            },
+            error: function(response) {
+
+                $("#Borrar").modal('hide');
+                $("#ModalError").html(`<div class="modal-header">
+                                       <h4 class="align-left">Ha ocurrido un error</h4>
+                                       <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                       <div>
+                                       <p>Ha ocurrido un error. Por favor, contáctese con el equipo de IT.</p>
+                                       </div>
+                                       </div>
+                                       <div class="modal-footer">
+                                       <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Aceptar</button>
+                                       </div>`);
+                $("#Error").modal('show');
+            }
+        });
+    }    
+
+    function EditarTratamiento(tratamiento) {
+
+        $.ajax({
+            type: "POST",
+            url: "EditarTratamiento",
+            data: { mod: tratamiento },
+            success: function(response) {
+                if (response.result == "success") {
+                    $("#Editar").modal('hide');
+                    $("#ModalExito").html(`<div class="modal-header">
+                                           <h4 class="align-left">Operación realizada con éxito.</h4>
+                                           <button type="button" class="btn-close align-right" onclick='location.href="/Residente/InformacionExtra?ci=${ciRes}"' aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                           </div>
+                                           <div class="modal-body">
+                                           <div>
+                                           <p>${response.mensaje}</p>
+                                           </div>
+                                           </div>
+                                           <div class="modal-footer">
+                                           <button type="button" class="btn btn-primary" onclick='location.href="/Residente/InformacionExtra?ci=${ciRes}"'>Aceptar</button>
+                                           </div>`);
+                    $("#Exito").modal('show');
+                }
+                if (response.result == "error") {
+                    $("#Editar").modal('hide');
+                    $("#ModalError").html(`<div class="modal-header">
+                                           <h4 class="align-left">Ha ocurrido un error</h4>
+                                           <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                           </div>
+                                           <div class="modal-body">
+                                           <div>
+                                           <p>${response.mensaje}</p>
+                                           </div>
+                                           </div>
+                                           <div class="modal-footer">
+                                           <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Aceptar</button>
+                                           </div>`);
+                    $("#Error").modal('show');
+                }
+            }
+        });
+    }
+
+    function validarTratamiento(datos) {
+        var valido = true;
+        if (datos["FechaComienzo"] != null && datos["FechaFin"] != null && datos["FechaComienzo"] > datos["FechaFin"]) valido = false;
+        if (datos["Medico"] == "" || datos["Descripcion"] == "" || datos["IdTratamiento"] == "" || ciRes == "") valido = false;
+
+        return valido;
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+
+
+    // FUNCIONES DE RECETAS
+    function BorrarRecetaInicio(idReceta) {
+        var value;
+        for (let i = 0; i < recetas.length; i++){
+            if (recetas[i].idReceta == idReceta){
+                value = recetas[i];
+            }
+        }
+        var fchEmision = ParseFecha(value.fechaEmision);
+        var fchVencimiento = ParseFecha(value.fechaVencimiento);
+
+        $("#ModalBorrar").html(`<div class="modal-header">
+                                                            <h4 class="align-left">Borrar una receta</h4>
+                                                            <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div id="modalBorrar">
+                                                              <div class="form-group">
+                                                            <label asp-for="idReceta" class="control-label">Id de la receta</label>
+                                                            <input asp-for="idReceta" class="form-control" readonly value="${value.idReceta}"/>
+                                                            <span asp-validation-for="idReceta" class="text-danger"></span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label asp-for="sustancia" class="control-label">Sustancia</label>
+                                                            <input asp-for="sustancia" class="form-control"  readonly value="${value.sustancia}" />
+                                                            <span asp-validation-for="medicamento" class="text-danger"></span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label asp-for="duracion" class="control-label">Días de tratamiento</label>
+                                                            <input asp-for="duracion" class="form-control" readonly value="${value.duracion}" />
+                                                            <span asp-validation-for="duracion" class="text-danger" ></span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label asp-for="frecuencia" class="control-label">Frecuencia (horas)</label>
+                                                            <input asp-for="frecuencia" class="form-control" readonly value="${value.frecuencia} " />
+                                                            <span asp-validation-for="frecuencia" class="text-danger"></span>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label asp-for="dosis" class="control-label">Dosis (mg / mL / sesiones)</label>
+                                                            <input asp-for="dosis" class="form-control" readonly value="${value.dosis}" />
+                                                            <span asp-validation-for="dosis" class="text-danger"></span>
+                                                        </div>
+                                                          <div class="form-group">
+                                                            <label asp-for="fechaEmision" class="control-label">Fecha de emisión</label>
+                                                            <input asp-for="fechaEmision" class="form-control" readonly value="${fchEmision}" />
+                                                            <span asp-validation-for="fechaEmision" class="text-danger"></span>
+                                                        </div>
+                                                          <div class="form-group">
+                                                            <label asp-for="fechaVencimiento" class="control-label">Fecha de vencimiento</label>
+                                                            <input asp-for="fechaVencimiento" class="form-control" readonly value="${fchVencimiento}" />
+                                                            <span asp-validation-for="fechaVencimiento" class="text-danger"></span>
+                                                        </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger" onclick="BorrarReceta(${value.idReceta})" >Borrar</button>
+                                                             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                                                        </div>`);
+        $("#Borrar").modal('show')
+    }
+
+
+    function BorrarReceta(id) {
+        $.ajax({
+            type: "POST",
+            url: "EliminarReceta",
+            data: { idRec: id },
+            success: function(response) {
+                if (response.result == "success") {
+
+                    $("#Borrar").modal('hide');
+                    $("#ModalExito").html(`<div class="modal-header">
+                                          <h4 class="align-left">Operación realizada con éxito.</h4>
+                                          <button type="button" class="btn-close align-right" onclick='location.href="/Residente/InformacionExtra?ci=${ciRes}"' aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                          </div>
+                                          <div class="modal-body">
+                                          <div>
+                                          <p>${response.mensaje}</p>
+                                          </div>
+                                          </div>
+                                          <div class="modal-footer">
+                                          <button type="button" class="btn btn-primary" onclick='location.href="/Residente/InformacionExtra?ci=${ciRes}"'>Aceptar</button>
+                                          </div>`);
+                    $("#Exito").modal('show');
+                }
+                if (response.result == "error") {
+                    $("#Borrar").modal('hide');
+                    $("#ModalError").html(`<div class="modal-header">
+                                           <h4 class="align-left">Ha ocurrido un error</h4>
+                                           <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                           </div>
+                                           <div class="modal-body">
+                                           <div>
+                                           <p>${response.mensaje}</p>
+                                           </div>
+                                           </div>
+                                           <div class="modal-footer">
+                                           <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Aceptar</button>
+                                           </div>`);
+                    $("#Error").modal('show');
+                }
+            },
+            error: function(response) {
+                $("#Borrar").modal('hide');
+                $("#ModalError").html(`<div class="modal-header">
+                                       <h4 class="align-left">Ha ocurrido un error</h4>
+                                       <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                       </div>
+                                       <div class="modal-body">
+                                       <div>
+                                       <p>Ha ocurrido un error. Por favor, contáctese con el equipo de IT.</p>
+                                       </div>
+                                       </div>
+                                       <div class="modal-footer">
+                                       <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Aceptar</button>
+                                       </div>`);
+                $("#Error").modal('show');
+            }
+
+        });
+    }   
+
+    function agregarReceta() {
+        $.ajax({
+            type: "GET",
+            url: "AddRecetaDesdeTabla",
+            data: { idTrat: idTrat },
+            success: function(response) {
+                $("#ModalAgregarReceta").html(response);
+                $("#AgregarReceta").modal('show');
+            }
+        });
+
+    }
+   
+
+     function estaLaSustancia(sustancia)
+   {
+        var esta = false;
+        for (let i = 0; i < recetas.length; i++) {
+            if (recetas[i].sustancia== sustancia) {
+               
+                esta = true;
+            }
+        }
+        
+        return esta;
+   
+   }
+
+    function agregarNuevaReceta(RecetaAdd) {
+        var cedula = ciRes;
+
+
+        $.ajax({
+            type: "POST",
+            url: "AgregarRecetaDesdeTabla",
+            data: { modelo: RecetaAdd },
+            success: function(response) {
+                if (response.result == "success") {
+                    $("#AgregarReceta").modal('hide');
+                    $("#ModalExito").html(`<div class="modal-header">
+                                           <h4 class="align-left">Operación realizada con éxito.</h4>
+                                           <button type="button" class="btn-close align-right" onclick='location.href="/Residente/InformacionExtra?ci=${cedula}"' aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                           </div>
+                                           <div class="modal-body">
+                                           <div>
+                                           <p>${response.mensaje}</p>
+                                           </div>
+                                           </div>
+                                           <div class="modal-footer">
+                                           <button type="button" class="btn btn-primary" onclick='location.href="/Residente/InformacionExtra?ci=${cedula}"'>Aceptar</button>
+                                           </div>`);
+                    $("#Exito").modal('show');
+                }
+                if (response.result == "error") {
+                    $("#AgregarReceta").modal('hide');
+                    $("#ModalError").html(`<div class="modal-header">
+                                           <h4 class="align-left">Ha ocurrido un error</h4>
+                                           <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                           </div>
+                                           <div class="modal-body">
+                                           <div>
+                                           <p>${response.mensaje}</p>
+                                           </div>
+                                           </div>
+                                           <div class="modal-footer">
+                                           <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Aceptar</button>
+                                           </div>`);
+                    $("#Error").modal('show');
+                }
+            }
+        });
+    };
+
+    ////////////////////////////////////////////////////////
+
+    // FUNCIONES DE MEDICAMENTOS
+    function BorrarMedicamentoInicio() {
+        $("#ModalBorrar").html(`<div class="modal-header">
+                                                                <h4 class="align-left">Borrar un medicamento</h4>
+                                                                <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div id="modalBorrar">
+                                                                  <p>¿Está seguro que desea borrar el medicamento?</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-danger" onclick="BorrarMedicamento(${medicamentoParaBorrar})" >Borrar</button>
+                                                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                                                            </div>`);
+        $("#Borrar").modal('show')
+    }
+
+
+    function BorrarMedicamento(id) {
+        $.ajax({
+            type: "POST",
+            url: "EliminarMedicamento",
+            data: { idMed: id },
+            success: function (response) {
+                if (response.result == "success") {
+
+                    $("#Borrar").modal('hide');
+                    $("#ModalExito").html(`<div class="modal-header">
+                                              <h4 class="align-left">Operación realizada con éxito.</h4>
+                                              <button type="button" class="btn-close align-right" onclick='location.href="/Residente/InformacionExtra?ci=${ciRes}"' aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                              </div>
+                                              <div class="modal-body">
+                                              <div>
+                                              <p>${response.mensaje}</p>
+                                              </div>
+                                              </div>
+                                              <div class="modal-footer">
+                                              <button type="button" class="btn btn-primary" onclick='location.href="/Residente/InformacionExtra?ci=${ciRes}"'>Aceptar</button>
+                                              </div>`);
+                    $("#Exito").modal('show');
+                }
+                if (response.result == "error") {
+                    $("#Borrar").modal('hide');
+                    $("#ModalError").html(`<div class="modal-header">
+                                               <h4 class="align-left">Ha ocurrido un error</h4>
+                                               <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                               </div>
+                                               <div class="modal-body">
+                                               <div>
+                                               <p>${response.mensaje}</p>
+                                               </div>
+                                               </div>
+                                               <div class="modal-footer">
+                                               <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Aceptar</button>
+                                               </div>`);
+                    $("#Error").modal('show');
+                }
+            },
+            error: function (response) {
+                $("#Borrar").modal('hide');
+                $("#ModalError").html(`<div class="modal-header">
+                                           <h4 class="align-left">Ha ocurrido un error</h4>
+                                           <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                           </div>
+                                           <div class="modal-body">
+                                           <div>
+                                           <p>Ha ocurrido un error. Por favor, contáctese con el equipo de IT.</p>
+                                           </div>
+                                           </div>
+                                           <div class="modal-footer">
+                                           <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Aceptar</button>
+                                           </div>`);
+                $("#Error").modal('show');
+            }
+
+        });
+    }
+
+    function ParseFecha(fecha) {
+        var fechaAParsear = fecha.split("/");
+        var fechaParseada = fechaAParsear[2] + "-" + fechaAParsear[1] + "-" + fechaAParsear[0];
+        return fechaParseada
+    }
+
+</script>

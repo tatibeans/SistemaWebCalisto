@@ -1,0 +1,120 @@
+﻿@model MVC.Models.ModeloLogin
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+<div class="modal fade modal-lg" id="errorLogin" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"  data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Error</h4>
+            </div>
+            <div class="modal-body">
+                <div id="renderModalError">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"  data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <title>Ingreso</title>
+</head>
+<body>
+    <div class="form-horizontal">
+        <h4 style="text-align: center">Ingresar</h4>
+        <hr />
+
+        <div class="form-group ">
+            <label for="cedula" class="col-md-2">Cedula</label>
+            <div class="col-md-10">
+                <input type="text" id="cedula" name="cedula" class="form-control" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+            </div>
+        </div>
+
+        <div class="form-group ">
+            <label for="password" class="col-md-2">Password</label>
+            <div class="col-md-10">
+                <input type="Password" id="password" name="password" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+
+                <input type="submit" value="Aceptar" id="btnLogIn" onclick="Ingresar()" class="btn btn-default" />
+            </div>
+            <div>
+                @Html.ActionLink("¿Olvidaste tu contraseña?", "StartPassRecovery", "Usuario")
+            </div>
+        </div>
+
+        @if (ViewBag.Mensaje != null)
+        {
+            <span style="color: darkred; border: 2px solid darkred; padding: 5px;">
+                @ViewBag.Mensaje
+            </span>
+
+        }
+    </div>
+
+</body>
+</html>
+
+
+<script>
+    
+    function Ingresar() {
+
+        $("#btnLogIn").addClass("disabled");
+        var ci = $("#cedula").val();
+        var pass = $("#password").val();
+        $.ajax({
+
+            type: "POST",
+            url: "LogIn",
+            data: { cedula: ci, password: pass },
+            success: function (response) {
+                response.result
+                if (response.result == "error") {
+                    $("#renderModalError").html(response.mensaje);
+                    $("#errorLogin").modal('show');
+                    $("#btnLogIn").removeClass("disabled");
+
+                }
+                else 
+                {
+
+                    window.location.replace("VistaUsuario");
+                }
+
+            },
+            error: function () {
+                alert("Ha habido un error.");
+                $("#btnLogIn").removeClass("disabled");
+            }
+        })
+    }
+
+function valid_numbers(e)
+{
+        var key=e.which || e.KeyCode;
+        if  ( key >=48 && key <= 57)
+                return true; 
+         else return false;
+}
+
+</script>

@@ -1,0 +1,222 @@
+﻿@model IEnumerable<Dominio.Entidades.Usuario>
+
+<div class="modal fade " id="actUsuario" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="modalEditar">
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal-lg" id="msgParaUsuario" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="CargarTodo()"><span aria-hidden="true">&times;</span></button>
+                            </div>
+            <div class="modal-body">
+                <div id="modalMensaje">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="CargarTodo()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-group ">
+    <label for="cedula" class="col-md-2">Usuario</label>
+    <div class="col-md-10">
+        <input type="text" id="txtBusqueda" name="txtBusqueda" class="form-control" onchange="buscar()">
+    </div>
+</div>
+<table class="table table-striped">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Cedula)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Correo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Telefono)
+        </th>
+
+
+        <th></th>
+    </tr>
+    <tbody id="usuariosEncontrados">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cedula)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Correo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefono)
+                </td>
+
+                <td>
+                    <button type="button" onclick="Editar(@item.Cedula)" class="btn btn-success">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true">Editar</span>
+                    </button>
+                    <button type="button" onclick="VerDetalles(@item.Cedula)" class="btn btn-success">
+                        <span class="glyphicon glyphicon-list" aria-hidden="true">Detalles</span>
+                    </button>
+                    <button type="button" onclick="Borrar(@item.Cedula)" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-bin" aria-hidden="true">Borrar</span>
+                    </button>
+
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script>
+    function buscar() {
+
+        let valor = document.getElementById("txtBusqueda").value.toUpperCase();
+        let nombres = document.getElementById("usuariosEncontrados");
+        let filas = nombres.getElementsByTagName("tr");
+        let indice = 0;
+
+        if (isNaN(valor)) { indice = 1 };
+
+        for (let i = 0; i < filas.length; i++) {
+
+            let columnaLenguaje = filas[i].getElementsByTagName("td")[indice];
+
+            let lenguaje = columnaLenguaje.textContent;
+            filas[i].style.display = lenguaje.toUpperCase().indexOf(valor) > -1 ? "" : "none";
+        }
+    }
+    document.getElementById("txtBusqueda").addEventListener("keyup", buscar);
+
+    function Editar(ci) {
+
+        $("#btnLogIn").addClass("disabled");
+
+        $.ajax({
+            type: "GET",
+            url: "Actualizar",
+            data: { cedula: ci },
+            success: function (response) {
+                response.result
+                if (response.result == "error") {
+                    $("#renderModalError").html(response.mensaje);
+                    $("#errorLogin").modal('show');
+                }
+                else {
+                    console.log(response);
+                    $("#modalEditar").html(response);
+                    $("#actUsuario").modal('show');
+                }
+
+            },
+            error: function () {
+                alert("Ha habido un error.");
+                $("#btnLogIn").removeClass("disabled");
+            }
+        })
+    }
+
+    function guardar(tel, nom, mail, ci) {
+
+        $.ajax({
+            type: "POST",
+            url: "Actualizar",
+            data: { cedula: ci, telefono: tel, nombre: nom, correo: mail },
+            success: function (response) {
+                response.result
+                if (response.result == "error") {
+                    $("#renderModalError").html(response.mensaje);
+                    $("#errorLogin").modal('show');
+                }
+                else {
+                    $("#actUsuario").modal('hide');
+                    $("#modalMensaje").html(response.mensaje);
+                    $("#msgParaUsuario").modal('show');
+                   
+                    
+                }
+
+            },
+            error: function () {
+                alert("Ha habido un error.");
+                $("#btnLogIn").removeClass("disabled");
+            }
+        })
+    }
+
+    function Borrar(ci) {
+        $.ajax({
+            type: "POST",
+            url: "BorrarUsuario",
+            data: { cedula: ci },
+            success: function (response) {
+                response.result
+                if (response.result == "error") {
+                    $("#renderModalError").html(response.mensaje);
+                    $("#errorLogin").modal('show');
+                }
+                else {
+                    
+                    $("#modalMensaje").html(response.mensaje);
+                    $("#msgParaUsuario").modal('show');
+                    
+                }
+
+            },
+            error: function () {
+                alert("Ha habido un error.");
+                $("#btnLogIn").removeClass("disabled");
+            }
+        });
+
+    }
+
+    function VerDetalles(cedula) {
+        $.ajax({
+            type: "GET",
+            url: "DetallesUsuario",
+            data: { cedula: cedula },
+            success: function (response) {
+                response.result
+                if (response.result == "error") {
+                    $("#renderModalError").html(response.mensaje);
+                    $("#errorLogin").modal('show');
+                    /*   $("#btnLogIn").removeClass("disabled");*/
+                }
+                else {
+                    $("#modalEditar").html(response);
+                    $("#actUsuario").modal('show');
+                }
+
+            },
+            error: function () {
+                alert("Ha habido un error.");
+                $("#btnLogIn").removeClass("disabled");
+            }
+        })
+
+    }
+
+    function CargarTodo() {
+        location.reload();
+    }
+
+</script>

@@ -1,0 +1,167 @@
+﻿@model IEnumerable<CalistoNET6.Models.ModeloResidente>
+
+
+
+
+<div id="agregarAlerta" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" id="modalAlerta">
+            <div class="modal-header">
+                <h4 class="modal-tittle">Enviar una alerta</h4>
+                <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                <hr />
+            </div>
+            <div class="modal-body">
+                <input id="cedula" hidden />
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 "> <label for="Nombre" class="control-label">Nombre Residente</label>   </div>
+                    <div class="col-7 "> <input readonly id="Nombre" class="form-control" />   </div>
+
+                </div>
+
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 ">
+                        <label for="Situacion" class="control-label">Situacion</label>
+                    </div>
+                    <div class="col-7 ">
+                        <select id="situacion" class="form-control">
+                            <option value="" selected disabled hidden>Seleccione</option>
+                            <option value="Caida">Caída</option>
+                            <option value="Enfermedad">Enfermedad</option>
+                            <option value="Informacion">Información</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 "> <label class="control-label" for="urgente">¿Es urgente?</label>  </div>
+                    <div class="col-7 "> <input class="form-check-input ml-2" type="checkbox" id="urgente"> </div>
+                </div>
+
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 ">  <label class="control-label" for="textoIngresado">Mensaje</label> </div>
+                    <div class="col-7 "> <textarea id="textoIngresado" placeholder="Mensaje o motivo:" class="form-control"></textarea> </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        <span class="hidden-xs">Cerrar</span>
+                    </button>
+
+                    <button type="button" onclick="crearAlerta()" id="btnAlertaCrear" class="btn btn-primary">
+                        <span class="fa fa-save"></span>
+                        <span class="hidden-xs"> Guardar</span>
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade " style="margin: auto;" id="msgParaUsuario" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Cerrar" data-mdb-dismiss="modal" data-toggle="tooltip" data-placement="bottom" title="Cerrar"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMensaje">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" data-mdb-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="mt-2 mb-2">
+    <h4>Enviar un mensaje de alerta</h4>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cedula)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cedula)
+                </td>
+                <td>
+                    <button class="btn btn-warning" onclick="mostrarAlerta(@item.Cedula, '@item.Nombre')"><i class="fa-solid fa-bell"></i></button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+
+    function mostrarAlerta(cedula, nombre) {
+        $("#cedula").val(cedula);
+        $("#Nombre").val(nombre);
+        $("#agregarAlerta").modal('show');
+
+    }
+
+    function crearAlerta() {
+
+        var cedula = $("#cedula").val();
+        var situacion = $("#situacion").val();
+        var urgente = $("#urgente").is(":checked");
+        var mensaje = $("#textoIngresado").val();
+        var nombre =   $("#Nombre").val();
+
+        $("#btnAlertaCrear").addClass("disabled");
+
+        $.ajax({
+            type: "POST",
+            url: "CrearAlerta",
+            data: { cedula: cedula, urgente: urgente, situacion: situacion, mensaje: mensaje, nombre: nombre },
+            success: function(response) {
+                response.result
+                if (response.result == "error") {
+
+                    $("#modalMensaje").html(response.mensaje);
+                    $("#msgParaUsuario").modal('show');
+                    $("#btnAlertaCrear").removeClass("disabled");
+
+                }
+                else {
+
+                    $("#modalMensaje").html(response.mensaje);
+                    $("#agregarAlerta").modal('hide');
+                    $("#cedula").val("");
+                    $("#situacion").val("");
+                    $("#urgente").prop('checked', false);
+                    $("#textoIngresado").val("");
+                    $("#msgParaUsuario").modal('show');
+                    $("#btnAlertaCrear").removeClass("disabled");
+                }
+
+            },
+            error: function() {
+                alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+                $("#btnLogIn").removeClass("disabled");
+            }
+        });
+    }
+</script>

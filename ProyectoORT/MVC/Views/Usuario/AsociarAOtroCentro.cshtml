@@ -1,0 +1,145 @@
+﻿@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Asociar un usuario existente a este centro residencial.</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        
+        <div class="col-md-10">
+            <p>Ingrese la cédula sin puntos ni guiones.</p>
+            <label for="txtCedula" id="lblCedula">Cédula:</label>
+            <input type="text" id="txtCedula" />
+        </div>
+    </div>
+
+    <div class="modal fade modal-lg" id="modUsuarioEncontrado" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" data-toggle="tooltip" data-placement="bottom" title="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="tituloEncontrado">Usuario encontrado</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="renderModalEncontrado">
+
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="Cancelar()">Cancelar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="Confirmar()">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-lg" id="modUsuarioNoExiste" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="tituloNoExiste">Usuario no encontrado</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="renderModalNoExiste">
+
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal" onclick="Registrar()">Registrar un usuario</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="Cancelar()">Intentar de nuevo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="divMensaje">
+
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="button" id="btnConfirmar" value="Confirmar" onclick="TomarDatos()" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Volver", "VistaUsuario")
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryval")
+<script type="text/javascript">
+    function TomarDatos() {
+        $("#btnConfirmar").addClass("disabled");
+        var cedula = document.getElementById('txtCedula').value;
+        $.ajax({
+            type: "POST",
+            url: "BuscarUno",
+            data: cedula,
+            success: function (response) {
+                $("#renderModalEncontrado").html(response.mensaje);
+                $("#modUsuarioEncontrado").modal('show');
+            },
+            error: function (response) {
+                $("#renderModalNoExiste").html(response.mensaje);
+                $("#modUsuarioNoExiste").modal('show');
+            }
+        })
+        $("#btnConfirmar").removeClass("disabled");
+    }
+
+    function Cancelar() {
+        $("#txtCedula").val("");
+        $("#modUsuarioEncontrado").modal('hide');
+        $("#modUsuarioNoExiste").modal('hide');
+    }
+
+    function Aceptar() {
+        var cedula = $("#txtCedula").val();
+        $.ajax({
+            type: "POST",
+            url: "BuscarUno",
+            data: { ci: cedula },
+            success: function (response) {
+                if (response.result == "success") {
+                    $.ajax({
+                        type: "POST",
+                        url: "AsociarAOtroCentro",
+                        data: JSON.stringify(cedula),
+                        contentType: "application/json",
+                        dataType: "json",
+                        success: $("#divMensaje").html(response.mensaje),
+                        error: $("#divMensaje").html(response.mensaje)
+                    })
+                    $("#modUsuarioEncontrado").modal('hide');
+                } else {
+                    $("#modUsuarioEncontrado").modal('hide');
+                    $("#renderModalNoExiste").html(response.mensaje);
+                    $("#modUsuarioNoExiste").modal('show');
+                }
+
+            },
+            error: function (response) {
+                $("#modUsuarioEncontrado").modal('hide');
+                $("#renderModalNoExiste").html(response.mensaje);
+                $("#modUsuarioNoExiste").modal('show');
+            }
+        })
+    }
+
+    function Registrar() {
+        $.ajax({
+            type: "GET",
+            url: "RegistroDatos"
+        })
+    }
+
+
+</script>

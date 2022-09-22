@@ -1,0 +1,114 @@
+﻿@model CalistoNET6.Models.ViewModel.RecoveryPassViewModel
+
+@{
+    Layout = null;
+
+}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Calisto</title>
+    <link href="https://proyectocalistoort.azurewebsites.net/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+   @* <link href="~/css/styles.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+*@
+</head>
+
+<body class="bg-primary">
+
+    <div id="layoutAuthentication">
+        <div id="layoutAuthentication_content">
+            <main>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-5">
+                            <div class="card shadow-lg border-0 rounded-lg mt-5">
+                                <div class="card-header"><h3 class="text-center font-weight-light my-4">Recuperacion de contraseña</h3>             </div>
+                                <div class="card-body">
+                                  
+                                    <form asp-action="PassRecovery" id="passRecovery">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="form-group row mt-2 ">
+                                            <div class="col-5 "><label asp-for="Password" class="control-label"></label></div>
+                                            <div class="col-7 ">  <input asp-for="Password" type="password" class="form-control" /></div>
+
+                                        </div>
+                                        <div class="form-group row mt-2 ">
+                                            <div class="offset-5 col-6">  <span asp-validation-for="Password"  class="text-danger"></span></div>
+                                        </div>
+                                        <div class="form-group row mt-2 ">
+                                            <div class="col-5 "> <label asp-for="PasswordRepeat" class="control-label"></label></div>
+                                            <div class="col-7 ">   <input asp-for="PasswordRepeat" type="password" class="form-control" /></div>
+
+                                        </div>
+                                        <div class="form-group row mt-2 ">
+                                            <div class="offset-5 col-6">  <span asp-validation-for="PasswordRepeat" class="text-danger"></span></div>
+                                        </div>
+                                        <input asp-for="token" hidden class="form-control" />
+                              
+
+                                        <div class="modal-footer mt-2  ">
+                                            <button type="button" id="btnCancelar" onclick="irLogIn()" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <input type="submit" id="btnLogIn" value="Recuperar" class="btn btn-primary" />
+                                        </div>
+                                    </form>
+                                    <div class="form-group mt-2">
+                                        @if (ViewBag.Mensaje != null)
+                                        {
+                                            <span style="color: darkred; border: 2px solid darkred; padding: 5px;">
+                                                @ViewBag.Mensaje
+                                            </span>
+
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+    </div>
+   @* <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="js/scripts.js"></script>
+</body>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>*@
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://proyectocalistoort.azurewebsites.net/js/scripts.js"></script>
+</body>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+
+</html>
+
+<script>
+    $("#passRecovery").submit(function(){
+        
+       $("#btnCancelar").addClass("disabled");
+       $("#btnLogIn").addClass("disabled");       
+       $("#btnLogIn").append(' <span class="spinner-border spinner-border-sm"></span>')
+    })   
+    function irLogIn()
+    {
+        window.location = "https://proyectocalistoort.azurewebsites.net/";
+    }
+
+
+</script>

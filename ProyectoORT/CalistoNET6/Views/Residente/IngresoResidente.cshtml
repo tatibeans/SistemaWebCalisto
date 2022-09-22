@@ -1,0 +1,447 @@
+﻿@model CalistoNET6.Models.ModeloResidente
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="modal fade " id="errorIngresoRes" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Error</h4>
+            </div>
+            <div class="modal-body">
+                <div id="renderModalError">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade " id="modalMensajeIngreso" tabindex="-1" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content" id="renderModalMensajeIngreso">
+        </div>
+
+    </div>
+</div>
+
+
+<div class="modal fade " id="elegirResp" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Seleccione un responsable</h4>
+                <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+
+            </div>
+            <div class="modal-body">
+                <div class="form-group ">
+                    <label for="cedula" class="col-md-2">Usuario</label>
+                    <div class="col-md-10">
+                        <input type="text" id="textoBusqueda" name="textoBusqueda" class="form-control" onkeyup="buscar('index2')">
+                    </div>
+                </div>
+
+                <table class="table table-striped" id="modalElegir">
+                    <thead class="text-center">
+                    <th>Nombre</th>
+                    <th>Cédula</th>
+                    <th>Seleccionar</th>
+                    </thead>
+
+                    <tbody id="tblResponsables" class="text-center">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mt-1">Ingresar un residente</h4>
+<hr />
+<div class="col-md-8">
+    <form asp-action="IngresoResidente" id="formularioIngresoResidente" name="formularioIngresoResidente">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="Cedula" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="Cedula" id="txtCedula" class="form-control" onkeypress="return event.charCode >= 48 && event.charCode <= 57" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="Cedula" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="Nombre" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="Nombre" id="txtNombre" class="form-control" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="Nombre" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="Mutualista" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="Mutualista" id="txtMutualista" class="form-control" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="Mutualista" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="Dieta" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="Dieta" id="txtDieta" class="form-control" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="Dieta" class="text-danger"></span></div>
+        </div>
+
+        <div class="row mt-2 form-group">
+            <label asp-for="Alergias" class="control-label col-5"></label>
+
+            <div class="col-md-5">
+                <input type="text" class="form-control" id="ingresoAlergia" />
+            </div>
+
+            <div class="col-2 d-flex justify-content-start">
+                <button type="button" id="btnElegirAlergia" onclick="agregarAlergia()" class="btn btn-info" aria-hidden="true"><i class="fa-solid fa-plus"></i></button>
+
+            </div>
+        </div>
+
+        <div class="row mt-2 form-group">
+            <div class="col-7 offset-5 row" id="tablaAlergias">
+            </div>
+        </div>
+
+
+        <div class="row form-group">
+            <label asp-for="Condiciones" class="control-label col-5"></label>
+
+            <div class="col-md-5">
+                <input type="text" class="form-control" id="ingresoCondicion" />
+            </div>
+
+            <div class=" col-2 d-flex justify-content-start">
+                <button type="button" id="btnElegirCondicion" onclick="agregarCondicion()" class="btn btn-info" aria-hidden="true"><i class="fa-solid fa-plus"></i></button>
+
+            </div>
+        </div>
+
+        <div class="row mt-2 form-group">
+            <div class="col-7 offset-5 row" id="tablaCondiciones">
+            </div>
+
+        </div>
+
+
+
+        <input asp-for="Alergias" type="text" hidden id="Alergias" name="Alergias" />
+        <input asp-for="Condiciones" type="text" hidden id="Condiciones" name="Condiciones" />
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="FechaNacimiento" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="FechaNacimiento" id="fecha" min="1800-01-01" max="@ViewBag.FechaHoy" type="date" class="form-control" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="FechaNacimiento" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="Genero" class="control-label"></label></div>
+            <div class="col-7 ">
+                @Html.DropDownListFor(model => model.Genero, new SelectList(Enum.GetValues(typeof(Dominio.Entidades.Genero))), "Seleccionar", new { @class = "form-control", @name = "txtGenero" })
+
+            </div>
+
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="Genero" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="ServicioFunebre" class="control-label"></label></div>
+            <div class="col-7 ">  <input asp-for="ServicioFunebre" id="txtServicio" class="form-control" /></div>
+
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="ServicioFunebre" class="text-danger"></span></div>
+        </div>
+
+        <div class="form-group row mt-2 ">
+            <div class="col-5 "><label asp-for="ResponsableCI" class="control-label"></label></div>
+            <div class="col-5 ">  <input asp-for="ResponsableCI" id="txtRespCi" readonly class="form-control" /></div>
+            <div class="col-2 d-flex justify-content-start">
+                <buttton id="btnElegir" onclick="BuscarResponsables()" class="btn btn-info" aria-hidden="true">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </buttton>
+            </div>
+        </div>
+        <div class="form-group row mt-2 ">
+            <div class="offset-5 col-6">  <span asp-validation-for="ResponsableCI" class="text-danger"></span></div>
+
+        </div>
+
+
+
+        <div class="form-group mt-2">
+            <div class="modal-footer d-flex justify-content-end">
+                <button type="submit" class="btn btn-success">
+                    <span class="fa fa-save"></span>
+                    <span class="hidden-xs"> Guardar</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+
+    $(document).ready(function () {
+        $.validator.unobtrusive.parse("#formularioIngresoResidente");
+    });
+
+
+
+    var alergias = [];
+    var condiciones = [];
+
+    function agregarAlergia() {
+        // estamos verificando que no se agregen numeros a las alergias
+        if (!(/\d/.test($("#ingresoAlergia").val().trim())) && $("#ingresoAlergia").val().trim() != "") {
+
+            var alergia = $("#ingresoAlergia").val().toUpperCase();
+
+            if (alergias.indexOf(alergia) < 0) {
+
+                $("#tablaAlergias").append(`<label class="col-md-offset-1" ><input type="checkbox" class="alerg"  value="${alergia}" checked/>
+                                                                ${alergia} </label>`);
+                alergias.push(alergia);
+                $("#ingresoAlergia").val("");
+
+            }
+        }
+    }
+
+
+    function agregarCondicion() {
+        // estamos verificando que no se agregen numeros a las condiciones
+        if (!(/\d/.test($("#ingresoCondicion").val().trim())) && $("#ingresoCondicion").val().trim() != "") {
+
+            var condicion = $("#ingresoCondicion").val().toUpperCase();
+
+            if (condiciones.indexOf(condicion) < 0) {
+
+                $("#tablaCondiciones").append(`<label class="col-md-offset-1" ><input type="checkbox" class="condi"  value="${condicion}" checked/>
+                                                                ${condicion} </label>`);
+                condiciones.push(condicion);
+                $("#ingresoCondicion").val("");
+
+            }
+        }
+    }
+
+    function armarListas() {
+
+        var listaA = "";
+        var listaC = "";
+
+        $(".alerg").each(function () {
+
+            if ($(this).prop('checked')) {
+                listaA += $(this).val() + " | ";
+            }
+
+        });
+
+        $(".condi").each(function () {
+
+            if ($(this).prop('checked')) {
+                listaC += $(this).val() + " | ";
+            }
+        });
+
+        listaA = listaA.substring(0, (listaA.length - 3));
+        listaC = listaC.substring(0, (listaC.length - 3));
+        $("#Condiciones").val(listaC);
+        $("#Alergias").val(listaA);
+
+    }
+
+    $("#formularioIngresoResidente").submit(function () {
+        armarListas();
+        var modelo =
+        {
+            Cedula: $("#txtCedula").val(),
+            Nombre: $("#txtNombre").val(),
+            Genero: $("#Genero").val(),
+            Dieta: $("#txtDieta").val(),
+            ResponsableCI: $("#txtRespCi").val(),
+            FechaNacimiento: $("#fecha").val(),
+            Mutualista: $("#txtMutualista").val(),
+            ServicioFunebre: $("#txtServicio").val()
+
+        }
+             
+
+        var Alergias = $("#Alergias").val()
+        var Condiciones = $("#Condiciones").val()
+       
+        if ($("#formularioIngresoResidente").valid()){
+
+ 
+            $.ajax({
+                type: "POST",
+                url: "IngresoResidente",
+                data: { modelo: modelo, Alergias: Alergias, Condiciones: Condiciones },
+                success: function (response) {
+                    response.result
+                    if (response.result == "error") {
+                        $("#renderModalMensajeIngreso").html(
+                            `<div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">Ocurrio un error</h4>
+                                 <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                
+                            </div>
+                            <div class="modal-body">
+                                <div>
+                                    ${response.mensaje}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                        <button type="button"  class="btn btn-primary"  data-bs-dismiss="modal">Aceptar</button>
+                            </div>`)
+                        $("#modalMensajeIngreso").modal('show')
+                    }
+                    else {
+
+                        $("#renderModalMensajeIngreso").html(
+                            `<div class="modal-header"> 
+                            <h4 class="modal-title" id="myModalLabel">Residente agregado con éxito</h4>
+                                 <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                          
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                ${response.mensaje}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                                <button type="button" onclick="irAListaResidentes()" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+                        </div>`)
+                        $("#modalMensajeIngreso").modal('show')
+
+
+                    }
+
+                },
+                error: function () {
+                    alert("Ha habido un error. Por favor, contáctese con el equipo de TI.");
+                    $("#btnAgregar").removeClass("disabled");
+                }
+            });
+            return false;
+        }
+        return false;
+    })
+
+
+
+
+    function irAListaResidentes() {
+        window.location.replace("Index")
+
+    }
+
+    function BuscarResponsables() {
+        $("#btnElegir").addClass("disabled");
+
+        $.ajax({
+            type: "GET",
+            url: "BuscarResponsables",
+            success: function (response) {
+                // obtengo lista de responsables activos
+
+                if (response.result != "error") {
+                    var tablaHTML = "";
+
+                    response.data.forEach(function (responsable) {
+                        // traducción: una fila con 3 celdas: nombre, cedula y boton de elegir, que llama una funcion
+                        // y manda la cedula y el nombre del elegido
+
+                        tablaHTML += '<tr><td>' + responsable.nombre + '</td><td>' +
+                            responsable.cedula + '</td><td><button class="btn btn-success" onclick="AsociarResp(\'' + responsable.cedula + '\',\'' + responsable.nombre + '\')" ><span class="fa-solid fa-square-plus"></span></button></td></tr>';
+                    });
+
+                    // muestro el modal con esa lista
+                    $("#tblResponsables").html(tablaHTML);
+                    $("#elegirResp").modal("show");
+                    $("#btnElegir").removeClass("disabled");
+                } else {
+                    $("#renderModalError").html(`<p>${response.mensaje}</p>`);
+                    $("#errorIngresoRes").modal("show");
+                    $("#btnElegir").removeClass("disabled");
+                }
+            }
+        });
+    }
+
+
+    function AsociarResp(cedula, nombre) {
+        $("#txtRespCi").val(cedula);
+        $("#divInfoResponsable").append('<p>Nombre: ' + nombre + '</p>');
+        $("#divInfoResponsable").append('<button id="btnQuitar" class="btn btn-danger" onclick="QuitarResp()"><span class="glyphicon glyphicon-remove"></span></button>');
+        $("#elegirResp").modal("hide");
+        $("#tblResponsables").html("");
+    }
+
+    function QuitarResp() {
+        $("#txtRespCi").val("");
+        $("#divInfoResponsable").html("");
+        $("#btnElegir").removeClass("disabled");
+        $("#btnQuitar").hide();
+    }
+
+    function buscar(texto) {
+
+        let valor;
+        let filas;
+        let indice;
+        let nombres;
+        if (texto == 'index1') {
+            valor = document.getElementById("textoBusquedaIndex1").value.toUpperCase();
+            nombres = document.getElementById("tablaResidentes");
+            filas = nombres.getElementsByTagName("tr");
+            indice = 1;
+
+        } else if (texto == 'index2') {
+            valor = document.getElementById("textoBusqueda").value.toUpperCase();
+            nombres = document.getElementById("tblResponsables");
+            filas = nombres.getElementsByTagName("tr");
+            indice = 1;
+        }
+
+
+        if (isNaN(valor)) { indice = 0 };
+
+        for (let i = 0; i < filas.length; i++) {
+
+            let columnaLenguaje = filas[i].getElementsByTagName("td")[indice];
+
+            let lenguaje = columnaLenguaje.textContent;
+            filas[i].style.display = lenguaje.toUpperCase().indexOf(valor) > -1 ? "" : "none";
+        }
+    }
+    document.getElementById("textoBusqueda").addEventListener("keyup", buscar);
+
+
+</script>
+

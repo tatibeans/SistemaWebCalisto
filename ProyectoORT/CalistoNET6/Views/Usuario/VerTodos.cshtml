@@ -1,0 +1,287 @@
+﻿@model IEnumerable<Dominio.Entidades.Usuario>
+@using Dominio.Entidades
+
+<div class="modal fade " id="actUsuario" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content border border-3 border-secondary" id="modalEditar">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade " id="BorrarUsuario" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content border border-3 border-secondary" id="modalBorrarUsuario">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade " id="ModalError" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content border border-3 border-secondary">
+            <div class="modal-header">
+                <h4>Error</h4>
+                <button type="button" class="close btn-close align-right" data-bs-dismiss="modal" aria-label="Cerrar" ></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMensajeError">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" >Aceptar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade " id="msgParaUsuario" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content border border-3 border-secondary">
+            <div class="modal-header">
+                <h4>Operación exitosa</h4>
+                <button type="button" class="close btn-close align-right" data-bs-dismiss="modal" aria-label="Cerrar" onclick="CargarTodo()"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMensaje">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="CargarTodo()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="form-group mt-2 ">
+    <h3>Lista de usuarios</h3>
+    <hr />
+    <label for="cedula" class="col-md-2"><strong>Buscar:</strong></label>
+    <div class="col-md-4 mt-1">
+        <input type="text" id="txtBusqueda" name="txtBusqueda" class="form-control" onchange="buscar()">
+    </div>
+</div>
+<table class="table table-striped text-center mt-3">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Cedula)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Correo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tipos)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Telefono)
+        </th>
+
+
+        <th>Acciones</th>
+    </tr>
+    <tbody id="usuariosEncontrados">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cedula)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Correo)
+                </td>
+                <td>
+                    @{
+                        var tipos = "";
+                        foreach (TipoUsuario t in item.Tipos)
+                        {
+                            tipos +=  t.Tipo +", " ;
+                        }
+                        tipos = tipos.Substring(0,tipos.Length - 2);
+
+                        }
+                        <span>@tipos</span>
+                    </td>
+                    <td>
+                            @Html.DisplayFor(modelItem => item.Telefono)
+                    </td>
+
+                    <td>
+                        <button type="button" onclick="Editar(@item.Cedula)" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button type="button" onclick="confirmarBorrar(@item.Cedula ,'@item.Nombre')" class="btn btn-danger" data-toggle="tooltip" data-placement="bottom" title="Eliminar">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+
+
+                    </td>
+                </tr>
+                    }
+        </tbody>
+    </table>
+
+
+    <script>
+        function buscar() {
+
+            let valor = document.getElementById("txtBusqueda").value.toUpperCase();
+            let nombres = document.getElementById("usuariosEncontrados");
+            let filas = nombres.getElementsByTagName("tr");
+            let indice = 0;
+
+            if (isNaN(valor)) { indice = 1 };
+
+            for (let i = 0; i < filas.length; i++) {
+
+                let columnaLenguaje = filas[i].getElementsByTagName("td")[indice];
+
+                let lenguaje = columnaLenguaje.textContent;
+                filas[i].style.display = lenguaje.toUpperCase().indexOf(valor) > -1 ? "" : "none";
+            }
+        }
+        document.getElementById("txtBusqueda").addEventListener("keyup", buscar);
+
+        function Editar(ci) {
+
+            $("#btnLogIn").addClass("disabled");
+
+            $.ajax({
+                type: "GET",
+                url: "Actualizar",
+                data: { cedula: ci },
+                success: function(response) {
+                    response.result
+                    if (response.result == "error") {
+                        $("#modalMensajeError").html(response.mensaje);
+                        $("#ModalError").modal('show');
+                    }
+                    else {
+
+                        $("#modalEditar").html(response);
+                        $("#actUsuario").modal('show');
+                    }
+
+                },
+                error: function() {
+                    alert("Ha habido un error.");
+                    $("#btnLogIn").removeClass("disabled");
+                }
+            })
+        }
+
+        function guardar(tel, nom, mail, ci, tiposUsuario) {
+
+            $.ajax({
+                type: "POST",
+                url: "Actualizar",
+                data: { cedula: ci, telefono: tel, nombre: nom, correo: mail, tipos: tiposUsuario },
+                success: function(response) {
+
+                    if (response.result == "error") {
+                        $("#modalMensajeError").html(response.mensaje);
+                        $("#ModalError").modal('show');
+                    }
+                    else {
+                        $("#actUsuario").modal('hide');
+                        $("#modalMensaje").html(response.mensaje);
+                        $("#msgParaUsuario").modal('show');
+
+
+                    }
+
+                },
+                error: function() {
+                    alert("Ha habido un error.");
+                    $("#btnLogIn").removeClass("disabled");
+                }
+            })
+        }
+    
+
+
+        function confirmarBorrar(ci, nombre) {
+
+            $("#modalBorrarUsuario").html(
+                `    <div class="modal-header">
+                <h2>Borrar Usuario </h2>
+                        <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+                                    </div>
+                    <div class="modal-body">
+                        <div>
+                        <p>Esta seguro que desea borrar el usuario: </p>
+                        <p>-Cedula: ${ci}</p>
+                        <p>-Nombre: ${nombre}</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" onclick="Borrar(${ci})">Borrar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>`
+
+            )
+            $("#BorrarUsuario").modal('show')
+        }
+
+        function Borrar(ci) {
+            $.ajax({
+                type: "POST",
+                url: "BorrarUsuario",
+                data: { cedula: ci },
+                success: function(response) {
+                    response.result
+                    if (response.result == "error") {
+                        $("#modalMensajeError").html(response.mensaje);
+                        $("#ModalError").modal('show');
+                    }
+                    else {
+
+                        $("#modalMensaje").html(response.mensaje);
+                        $("#msgParaUsuario").modal('show');
+
+                    }
+
+                },
+                error: function() {
+                    alert("Ha habido un error.");
+                    $("#btnLogIn").removeClass("disabled");
+                }
+            });
+
+        }
+
+        function VerDetalles(cedula) {
+            $.ajax({
+                type: "GET",
+                url: "DetallesUsuario",
+                data: { cedula: cedula },
+                success: function(response) {
+                    response.result
+                    if (response.result == "error") {
+                        $("#modalMensajeError").html(response.mensaje);
+                        $("#ModalError").modal('show');
+                        /*   $("#btnLogIn").removeClass("disabled");*/
+                    }
+                    else {
+                        $("#modalEditar").html(response);
+                        $("#actUsuario").modal('show');
+                    }
+
+                },
+                error: function() {
+                    alert("Ha habido un error.");
+                    $("#btnLogIn").removeClass("disabled");
+                }
+            })
+
+        }
+
+        function CargarTodo() {
+            location.reload();
+        }
+
+    </script>

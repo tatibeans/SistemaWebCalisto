@@ -1,0 +1,102 @@
+﻿@model IEnumerable<CalistoNET6.Models.ModeloConsulta>
+
+     <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/locale/bootstrap-table-es-AR.min.js"></script>
+@*<link href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>*@
+<div id="consultas"><h4>Consultas</h4></div>
+<table id="tableConsulta" data-pagination="true" data-toolbar="#consultas" data-page-size="5" data-search="true" data-sortable="true">
+    
+  <thead>
+    <tr>
+       
+      <th data-visible="false" data-field="id">Id</th>      
+      <th data-sortable="true" data-field="medico">Descripción</th> 
+      <th data-sortable="true" data-field="direccion">Direccion</th>       
+      <th data-sortable="true" data-field="especialidad">Especificaciones</th>
+      <th data-sortable="true" data-field="fechaConsulta">Fecha</th>
+     
+    </tr>
+  </thead>
+</table>
+
+<script>
+  
+    var d = new Date().getDate();
+    var m = new Date().getMonth()+1;
+    var y = new Date().getFullYear();
+    var fecha = armarFecha();
+
+    function armarFecha()
+    {
+        if (m<10) {
+            return d +"/"+ "0" + m + "/"+ + y
+        }
+        else
+        {
+            return d +"/"+  m + "/" +  y
+        }
+
+    }    
+  var table = $('#tableConsulta')
+  var data3= @Html.Raw(Json.Serialize(@Model));
+
+  table.bootstrapTable({data: data3})
+   
+  $(document).ready(function() {
+  $('#tableConsulta tr').each(function(i, value){
+     
+
+    if(value.textContent.includes(fecha.toString()) ) {
+      $(this).addClass('bg-info');
+    } 
+  })  
+    })
+
+$("#tableConsulta").on("click-row.bs.table", function(field, value, row, $el) {
+    
+    var id = value.id
+    var direccion = value.direccion
+    var especialidad = value.especialidad
+    var fechaConsulta = value.fechaConsulta
+ 
+    $("#modalBorrarConsulta").html(`<div class="modal-header"><h4 class="modal-tittle">Consulta</h4>
+    <hr />
+</div>
+
+<div class="modal-body ">
+
+    <div class="row">
+        <div >
+            <form method="post" action="BorrarConsulta">
+                <input readonly hidden asp-for="idEstudio" name ="id" class="form-control" value="${id}"/>
+                <div class="form-group mt-2 ">
+                    <label asp-for="Descripcion" class="control-label">Dirección</label>
+                    <input readonly asp-for="Descripcion" class="form-control" value="${direccion}"/>
+                   
+                </div>
+                <div class="form-group mt-2 ">
+                    <label asp-for="Stock" class="control-label">Especialidad</label>
+                    <input readonly asp-for="Stock" class="form-control" value="${especialidad}"/>
+                    
+                </div> 
+                 <div class="form-group mt-2 ">
+                       <label asp-for="Tipo" class="control-label">Fecha de la consulta</label>
+                       <input readonly asp-for="Tipo" class="form-control" value="${fechaConsulta}"/>
+                   
+                </div> 
+                   <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <input type="submit" value="Borrar" class="btn btn-danger" />
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>`);
+    $("#borrarConsulta").modal('show');
+  
+
+})
+ 
+</script>

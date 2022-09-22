@@ -1,0 +1,115 @@
+﻿@model IEnumerable<CalistoNET6.Models.ModeloEstudio>
+
+         <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/locale/bootstrap-table-es-AR.min.js"></script>
+@*<link href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>*@
+
+  <div id="Estudios"><h4>Estudios médicos</h4></div>
+<table id="tableEstudios" data-pagination="true" data-toolbar="#Estudios" data-page-size="5" data-search="true" data-sortable="true">
+  <thead>
+    <tr>
+       
+      <th data-sortable="true" data-visible="false" data-field="idEstudio">Id</th>      
+      <th data-sortable="true" data-field="descripcion">Descripción</th> 
+      <th data-sortable="true" data-field="fechaEstudio">Fecha del estudio</th>       
+      <th data-sortable="true" data-field="especificaciones">Especificaciones</th>
+      <th data-sortable="true" data-field="direccion">Dirección</th>
+      <th data-sortable="true" data-field="estimadoResultado">Fecha estimada del resultado</th>
+     
+    </tr>
+  </thead>
+</table>
+
+<script>
+   
+    var d = new Date().getDate();
+    var m = new Date().getMonth()+1;
+    var y = new Date().getFullYear();
+    var fecha = armarFecha();
+
+    function armarFecha()
+    {
+        if (m<10) {
+            return d +"/"+ "0" + m + "/"+ + y
+        }
+        else
+        {
+            return d +"/"+  m + "/" +  y
+        }
+
+    }
+    var table = $('#tableEstudios')
+    var data2 = @Html.Raw(Json.Serialize(@Model));
+    table.bootstrapTable({ data: data2 })
+
+    //$(document).ready(function () {
+    //    $('#tableEstudios tr').each(function (i, value) {
+
+    //        if (value.textContent.includes(fecha.toString())) {
+    //            $(this).addClass('bg-info');
+    //        }
+    //    })
+    //})
+
+    $("#tableEstudios").on("click-row.bs.table", function (field, value, row, $el) {
+
+        var id = value.idEstudio
+        var descripcion = value.descripcion
+        var especificaciones = value.especificaciones
+        var direccion = value.direccion
+        var fechaEst = value.fechaEstudio
+        var estimado = value.estimadoResultado
+        $("#modalBorrarEstudio").html(`<div class="modal-header"><h4 class="modal-tittle">Estudio</h4>
+        <hr />
+    </div>
+
+    <div class="modal-body ">
+
+        <div class="row">
+            <div >
+                <form method="post" action="BorrarEstudio">
+                    <input readonly hidden asp-for="idEstudio" name ="id" class="form-control" value="${id}"/>
+                    <div class="form-group mt-2 ">
+                        <label asp-for="Descripcion" class="control-label">Descripción</label>
+                        <input readonly asp-for="Descripcion" class="form-control" value="${descripcion}"/>
+
+                    </div>
+                    <div class="form-group mt-2 ">
+                        <label asp-for="Stock" class="control-label">Especificaciones</label>
+                        <input readonly asp-for="Stock" class="form-control" value="${especificaciones}"/>
+
+                    </div>
+                     <div class="form-group mt-2 ">
+                           <label asp-for="Tipo" class="control-label">Dirección</label>
+                           <input readonly asp-for="Tipo" class="form-control" value="${direccion}"/>
+
+
+        </div>
+         <div class="form-group mt-2 ">
+                        <label asp-for="Stock" class="control-label">Fecha del estudio</label>
+                        <input readonly asp-for="Stock" class="form-control" value="${fechaEst}"/>
+
+                    </div>
+                     <div class="form-group mt-2 ">
+                        <label asp-for="Stock" class="control-label">Fecha estimada del resultado</label>
+                        <input readonly asp-for="Stock" class="form-control" value="${estimado}"/>
+
+                    </div>
+                       <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <input type="submit" value="Borrar" class="btn btn-danger" />
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>`);
+        $("#borrarEstudio").modal('show');
+
+
+
+
+    })
+
+</script>

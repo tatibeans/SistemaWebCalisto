@@ -1,0 +1,472 @@
+﻿@model List<MVC.Models.ModeloResidenteActualizar>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="modal fade" id="detallesResidente" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="modalVerResidente">
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editarResidente" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content" id="modalEditar">
+     
+        </div>
+    </div>
+</div>
+
+@*PRUEBA
+---------------------------------*@
+<div id="agregarAlergia" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-tittle">Agregar</h4>
+            </div>
+            <form class="form-horizontal" role="form" id="form-agregar">
+                <div class="modal-body">
+                    <div class="form-group col-md-12">
+                        <label for="agregar_nombre" class="control-label col-sm-4">Nombre: </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="agregar_Alergia" name="agregar_Alergia">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs"> Cerrar</span>
+                    </button>
+                    <button type="button" id="GuardarAlergia" name="GuardarAlergia" class="btn btn-primary">
+                        <span class="fa fa-save"></span><span class="hidden-xs"> Guardar</span>
+
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="agregarCondicion" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-tittle">Agregar</h4>
+            </div>
+            <form class="form-horizontal" role="form" id="form-agregar">
+                <div class="modal-body">
+                    <div class="form-group col-md-12">
+                        <label for="agregar_nombre" class="control-label col-sm-4">Nombre: </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="agregar_Condicion" name="agregar_Condicion">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span><span class="hidden-xs"> Cerrar</span>
+                    </button>
+                    <button type="button" id="GuardarAlergia" name="GuardarAlergia" class="btn btn-primary">
+                        <span class="fa fa-save"></span><span class="hidden-xs"> Guardar</span>
+
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+@*----------------------------*@
+
+
+
+
+<div class="modal fade " id="elegirResp" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Seleccion un responsable</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group ">
+                    <label for="cedula" class="col-md-2">Usuario</label>
+                    <div class="col-md-10">
+                        <input type="text" id="textoBusqueda" name="textoBusqueda" class="form-control" onkeyup="buscar('index2')">
+                    </div>
+                </div>
+
+                <table class="table table-striped" id="modalElegir">
+                    <thead>
+                    <th>Nombre</th>
+                    <th>Cédula</th>
+                    <th>Seleccionar</th>
+                    </thead>
+                    <tbody id="tblResponsables">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal-lg" id="msgParaUsuario" data-backdrop="static" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar" onclick="CargarTodo()"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalMensaje">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="CargarTodo()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h3>Lista Residentes</h3>
+    </div>
+
+    <div class="panel-body">
+        <div style="margin-bottom: 8px;">
+            <div class="form-group row ">
+
+                <div class="col-md-6">
+                    <label for="cedula" class="col-md-2">Usuario</label>
+                    <input type="text" id="textoBusquedaIndex1" name="textoBusquedaIndex1" class="form-control" onkeyup="buscar('index1')">
+                </div>
+                <button id="btnRefresh" class="btn btn-default " onclick="CargarTodo()">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                </button>
+            </div>
+
+
+        </div>
+
+
+        @* DIFERENCIAR USUARIOS Y SI VIENE 1 RESIDENTE O TODOS *@
+        <div id="divResidentes">
+            @{
+                Html.RenderPartial("TablaResidentes", Model);
+            }
+        </div>
+        </div>
+    </div>
+
+    @* TODA LA LÓGICA DE LA PÁGINA *@
+    <script>
+
+        function CargarTodo() {
+            $("#btnRefresh").addClass("disabled");
+
+            $.ajax({
+                type: "GET",
+                url: "Residente/GetTodosParaActualizar",
+                success: function (response) {
+                    $("#divResidentes").html(response);
+                    $("#btnRefresh").removeClass("disabled");
+                },
+                error: function () {
+                    alert("Ha habido un error.");
+                    $("#btnRefresh").removeClass("disabled");
+                }
+            })
+        }
+
+        function PrimeraCarga() {
+            $.ajax({
+                type: "GET",
+                url: "Residente/GetTodosParaActualizar",
+                success: function (response) {
+                    $("#divResidentes").html(response);
+
+                    $("#actDietaModal").modal("hide");
+                    $("#actAlergiasModal").modal("hide");
+                    $("#actCondicionesModal").modal("hide");
+                    $("#actMutualistaModal").modal("hide");
+                    $("#actServicioModal").modal("hide");
+
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+
+                }
+            })
+        }
+
+        function GetPagina(pagina) {
+            $.ajax({
+                type: "GET",
+                url: "ActualizaRes",
+                data: { indicePag: pagina },
+                success: function (response) {
+                    $("#divResponsables").html(response);
+                }
+            });
+        }
+
+
+        var alergias = [];
+        var condiciones = [];
+
+        function agregarAlergia() {
+
+            if (!(/\d/.test($("#ingresoAlergia").val().trim())) && $("#ingresoAlergia").val().trim() != "") {
+
+                var alergia = $("#ingresoAlergia").val().toUpperCase();
+
+                if (alergias.indexOf(alergia) < 0) {
+
+                    $("#tablaAlergias").append(`<label class="col-md-offset-1" ><input type="checkbox" class="alerg"  value="${alergia}" checked/>
+                                        ${alergia} </label>`);
+                    alergias.push(alergia);
+                    $("#ingresoAlergia").val("");
+
+                }
+            }
+        }
+
+
+        function agregarCondicion() {
+
+            if (!(/\d/.test($("#ingresoCondicion").val().trim())) && $("#ingresoCondicion").val().trim() != "") {
+
+                var condicion = $("#ingresoCondicion").val().toUpperCase();
+
+                if (condiciones.indexOf(condicion) < 0) {
+
+                    $("#tablaCondiciones").append(`<label class="col-md-offset-1" ><input type="checkbox" class="condi"  value="${condicion}" checked/>
+                                        ${condicion} </label>`);
+                    condiciones.push(condicion);
+                    $("#ingresoCondicion").val("");
+
+                }
+            }
+        }
+
+        function armarListas() {
+
+            var listaA = "";
+            var listaC = "";
+
+            $(".alerg").each(function () {
+
+                if ($(this).prop('checked')) {
+                    listaA += $(this).val() + " | ";
+                }
+
+            });
+
+            $(".condi").each(function () {
+
+                if ($(this).prop('checked')) {
+                    listaC += $(this).val() + " | ";
+                }
+            });
+
+            listaA = listaA.substring(0, (listaA.length - 3));
+            listaC = listaC.substring(0, (listaC.length - 3));
+            $("#listaCondiciones").val(listaC);
+            $("#listaAlergias").val(listaA);
+
+        }
+
+
+        function Editar(cedula) {
+            $.ajax({
+                type: "GET",
+                url: "Residente/ActualizarResidente",
+                data: { cedula: cedula },
+                success: function (response) {
+
+                    $("#modalEditar").html(response);
+                    $("#editarResidente").modal('show');
+
+                },
+                error: function () {
+                    alert("Ha habido un error.");
+                    $("#btnRefresh").removeClass("disabled");
+                }
+
+            });
+        }
+
+
+        function BuscarResponsables() {
+            $("#btnElegir").addClass("disabled");
+
+            // hago un get a la api
+
+            $.ajax({
+                type: "GET",
+                url: "BuscarResponsables",
+                success: function (response) {
+                    // obtengo lista de responsables activos
+
+                    if (response.result != "error") {
+                        var tablaHTML = "";
+                        $.each(response.data, function (i, responsable) {
+
+                            // traducción: una fila con 3 celdas: nombre, cedula y boton de elegir, que llama una funcion
+                            // y manda la cedula y el nombre del elegido
+                            // Posibilidad de convertir a template string
+                            tablaHTML += '<tr><td>' + responsable.Nombre + '</td><td>' +
+                                responsable.Cedula + '</td><td><button class="btn btn-success" onclick="AsociarResp(\'' + responsable.Cedula + '\',\'' + responsable.Nombre + '\')" ><span class="glyphicon glyphicon-check"></span></button></td></tr>';
+
+                        });
+
+                        // muestro el modal con esa lista
+                        $("#tblResponsables").html(tablaHTML);
+
+                        $("#elegirResp").modal('show');
+
+                    } else {
+                        $("#renderModalError").html(`<p>${response.mensaje}</p>`);
+                        $("#errorIngresoRes").modal('show');
+                        $("#btnElegir").removeClass("disabled");
+                    }
+                }
+            });
+        }
+
+
+        function AsociarResp(cedula, nombre) {
+            QuitarResp();
+            $("#txtRespCi").val(cedula);
+            $("#divInfoResponsable").append('<p>Nombre: ' + nombre + '</p>');
+            $("#divInfoResponsable").append('<button id="btnQuitar" class="btn btn-danger" onclick="QuitarResp()"><span class="glyphicon glyphicon-remove"></span></button>');
+            $("#elegirResp").modal("hide");
+            $("#tblResponsables").html("");
+        }
+
+        function QuitarResp() {
+            $("#txtRespCi").val("");
+            $("#divInfoResponsable").html("");
+            $("#btnElegir").removeClass("disabled");
+            $("#btnQuitar").hide();
+        }
+
+        function VerDetallesResidente(cedula) {
+            $.ajax({
+                type: "GET",
+                url: "DetallesResidente",
+                data: { cedula: cedula },
+                success: function (response) {
+                    response.result
+                    if (response.result == "error") {
+                        $("#renderModalError").html(response.mensaje);
+                        $("#errorLogin").modal('show');
+
+                    }
+                    else {
+                        $("#modalVerResidente").html(response);
+                        $("#detallesResidente").modal('show');
+                    }
+
+                },
+                error: function () {
+                    alert("Ha habido un error.");
+                    $("#btnLogIn").removeClass("disabled");
+                }
+            })
+        }
+
+        //function MasInfo(cedula) {
+        //    $.ajax({
+        //        type: "GET",
+        //        url: "InformacionExtra",
+        //        data: { ci: cedula },
+        //        error: function (response) {
+        //            response.result
+        //            if (response.result == "error") {
+        //                $("#renderModalError").html(response.mensaje);
+        //                $("#errorLogin").modal('show');
+        //            }
+        //            else {
+
+        //                $("#modalMensaje").html(response.mensaje);
+        //                $("#msgParaUsuario").modal('show');
+        //            }
+        //        }
+        //    });
+        //}
+
+        function BorrarResidente(ci) {
+            $.ajax({
+                type: "POST",
+                url: "Residente/BorrarResidente",
+                data: { cedula: ci },
+                success: function (response) {
+                    response.result
+                    if (response.result == "error") {
+                        $("#renderModalError").html(response.mensaje);
+                        $("#errorLogin").modal('show');
+                    }
+                    else {
+
+                        $("#modalMensaje").html(response.mensaje);
+                        $("#msgParaUsuario").modal('show');
+
+                    }
+
+                },
+                error: function () {
+                    alert("Ha habido un error.");
+                    $("#btnLogIn").removeClass("disabled");
+                }
+            });
+
+        }
+
+
+        function buscar(texto) {
+
+            let valor;
+            let filas;
+            let indice;
+            let nombres;
+            if (texto == 'index1') {
+                valor = document.getElementById("textoBusquedaIndex1").value.toUpperCase();
+                nombres = document.getElementById("tablaResidentes");
+                filas = nombres.getElementsByTagName("tr");
+                indice = 1;
+
+            } else if (texto == 'index2') {
+                valor = document.getElementById("textoBusqueda").value.toUpperCase();
+                nombres = document.getElementById("tblResponsables");
+                filas = nombres.getElementsByTagName("tr");
+                indice = 1;
+            }
+
+
+            if (isNaN(valor)) { indice = 0 };
+
+            for (let i = 0; i < filas.length; i++) {
+
+                let columnaLenguaje = filas[i].getElementsByTagName("td")[indice];
+
+                let lenguaje = columnaLenguaje.textContent;
+                filas[i].style.display = lenguaje.toUpperCase().indexOf(valor) > -1 ? "" : "none";
+            }
+        }
+        document.getElementById("textoBusqueda").addEventListener("keyup", buscar);
+
+        function CargarTodo() {
+            location.reload();
+        }
+
+
+    </script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />

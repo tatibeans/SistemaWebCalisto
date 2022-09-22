@@ -1,0 +1,176 @@
+﻿@model IEnumerable<CalistoNET6.Models.ModeloSignoVital>
+
+
+<link href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/locale/bootstrap-table-es-AR.min.js"></script>
+
+<div id="Signos"><h4>Signos Vitales</h4></div>
+<table id="table" data-pagination="true" data-toolbar="#Signos" data-page-size="5" data-search="true" data-sortable="true">
+    <thead>
+        <tr>
+
+            <th data-sortable="true" data-visible="false" data-field="idSignoVital">Id</th>
+            <th data-sortable="true" data-field="ciResidente">Residente</th>
+            <th data-sortable="true" data-field="ciFuncionario">Funcionario</th>
+            <th data-sortable="true" data-field="fechaRegistro">Fecha</th>
+            <th data-sortable="true" data-field="azucar" data-formatter="operateFormatterAzucar">Azúcar en sangre</th>
+            <th data-sortable="true" data-field="presionMaxima" data-formatter="operateFormatterPresionMaxima">Presión máxima</th>
+            <th data-sortable="true" data-field="presionMinima" data-formatter="operateFormatterPresionMinima">Presión mínima</th>
+            <th data-sortable="true" data-field="temperatura" data-formatter="operateFormatterTemperatura">Temperatura corporal</th>
+            <th data-sortable="true" data-field="oxigeno" data-formatter="operateFormatterOxigeno">Oxigenación</th>
+            <th data-sortable="true" data-field="pulso" data-formatter="operateFormatterPulso">Pulso</th>
+        </tr>
+    </thead>
+</table>
+
+<script>
+
+    var d = new Date().getDate();
+    var m = new Date().getMonth() + 1;
+    var y = new Date().getFullYear();
+    var fecha = armarFecha();
+
+    function armarFecha() {
+        if (m < 10) {
+
+            return d + "/" + "0" + m + "/" + y
+        }
+        else {
+
+            return d + "/" + m + "/" + y
+        }
+
+    }
+    var table = $('#table')
+    var data = @Html.Raw(Json.Serialize(@Model));
+    table.bootstrapTable({ data: data })
+
+    $(document).ready(function () {
+        $('#table tr').each(function (i, value) {
+
+
+            if (value.textContent.includes(fecha.toString())) {
+                $(this).addClass('bg-info');
+            }
+        })
+    })
+
+    $("#table").on("click-row.bs.table", function (field, value, row, $el) {
+        ci = value.ciResidente;
+      
+        if (value.fechaRegistro.includes(fecha.toString())) {
+           
+            EditarSignoGet(value.idSignoVital)
+        }
+
+    })
+    //FORMATTERS
+
+    function operateFormatterAzucar(value, row, index) {
+
+        if (value == 0 || value == null) {
+            return [
+                '<div class="text-center">',
+                '<div > - </div>',
+                    '</div>'
+            ].join('')
+
+        } else {
+            return [
+                '<div class="text-center">',
+                '<div >' + value + '</div>',
+                '</div>'
+            ].join('')
+        }
+    }
+    function operateFormatterPresionMaxima(value, row, index) {
+
+        if (value == 0 || value==null) {
+            return [
+                '<div class="text-center">',
+                '<div > - </div>',
+                    '</div>'
+            ].join('')
+
+        } else {
+            return [
+                '<div class="text-center">',
+                '<div >' + value + '</div>',
+                '</div>'
+            ].join('')
+        }
+    }
+    function operateFormatterPresionMinima(value, row, index) {
+
+        if (value == 0 || value == null) {
+            return [
+               '<div class="text-center">',
+                '<div > - </div>',
+                '</div>'
+            ].join('')
+
+        } else {
+            return [
+                '<div class="text-center">',
+                '<div >' + value + '</div>',
+                '</div>'
+            ].join('')
+        }
+    }
+    function operateFormatterOxigeno(value, row, index) {
+
+        if (value == 0 || value == null) {
+            return [
+                '<div class="text-center">',
+                '<div > - </div>',
+                    '</div>'
+            ].join('')
+
+        } else {
+            return [
+                '<div class="text-center">',
+                '<div >' + value + '</div>',
+                '</div>'
+            ].join('')
+        }
+    }
+    function operateFormatterTemperatura(value, row, index) {
+
+        if (value == 0 || value == null) {
+            return [
+                '<div class="text-center">',
+                '<div > - </div>',
+                '</div>'
+            ].join('')
+        }
+        else {
+            return [
+                '<div class="text-center">',
+                '<div >'+ value +'</div>',
+                '</div>'
+            ].join('')
+        }
+    }
+    function operateFormatterPulso(value, row, index) {
+
+        if (value == 0 || value == null) {
+            return [
+                '<div class="text-center">',
+                '<div > - </div>',
+                '</div>'
+            ].join('')
+
+        } else {
+            return [
+                '<div class="text-center">',
+                '<div >' + value + '</div>',
+                '</div>'
+            ].join('')
+        }
+    }
+
+
+
+</script>

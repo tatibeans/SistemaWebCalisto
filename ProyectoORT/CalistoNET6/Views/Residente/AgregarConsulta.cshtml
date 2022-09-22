@@ -1,0 +1,88 @@
+﻿@model CalistoNET6.Models.ModeloConsulta
+
+<div class="modal-header">
+    <h4 class="modal-tittle">Agregar una consulta médica</h4>
+      <button type="button" class="btn-close align-right" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+    <hr />
+</div>
+
+<div class="modal-body ">
+
+<div @*class="row"*@>
+    <div @*class="col-md-4"*@>
+        <form asp-action="AgregarConsulta" id="agregarConsulta">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div> 
+            <div class="form-group row mt-2 ">
+                <div class="col-5 "><label asp-for="CiResidente" class="control-label"></label></div>
+                <div class="col-7 ">  <input asp-for="CiResidente" readonly class="form-control" /></div>
+               
+            </div>
+             <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="CiResidente" class="text-danger"></span></div>
+                </div>
+          <div class="form-group row mt-2 ">
+               <div class="col-5 "> <label asp-for="Medico" class="control-label"></label></div>
+               <div class="col-7 ">   <input asp-for="Medico" class="form-control" onkeypress="return (event.charCode >= 60 && event.charCode <= 90 ) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode >= 160 && event.charCode <= 163) || (event.charCode == 130) || (event.charCode == 32)"/></div>
+              
+            </div>
+             <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="Medico" class="text-danger"></span></div>
+                </div>
+          
+
+            <div class="form-group row mt-2 ">
+              <div class="col-5 ">  <label asp-for="Direccion" class="control-label"></label></div>
+                 <div class="col-7 "> <input asp-for="Direccion" class="form-control"  /></div>
+            
+            </div>
+               <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="Direccion" class="text-danger"></span></div>
+                   </div>
+            <div class="form-group row mt-2 ">
+                <div class="col-5 "><label asp-for="Especialidad" class="control-label"></label></div>
+                <div class="col-7 ">  <input asp-for="Especialidad" class="form-control" onkeypress="return (event.charCode >= 60 && event.charCode <= 90 ) || (event.charCode >= 97 && event.charCode <= 122) || (event.charCode >= 160 && event.charCode <= 163) || (event.charCode == 130) || (event.charCode == 32)" /></div>
+              
+            </div>
+              <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="Especialidad" class="text-danger"></span></div>
+                   </div>
+            <div class="form-group row mt-2 ">
+               <div class="col-5 "> <label asp-for="FechaConsulta" class="control-label"></label></div>
+               <div class="col-7 ">   <input asp-for="FechaConsulta" min="1800-01-01"  max="3000-01-01" class="form-control" /></div>
+               
+            </div>
+             <div class="form-group row mt-2 ">
+                    <div class="offset-5 col-6">  <span asp-validation-for="FechaConsulta" class="text-danger"></span></div>
+                   </div>
+            <div class="modal-footer mt-2  ">
+                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+<script>
+    var hoy;
+    $( document ).ready(function() {
+     var hoy = new Date();
+    var dd = hoy.getDate();
+    var mm = hoy.getMonth() + 1;
+    var yyyy = hoy.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+    hoy =   yyyy+ '-' + mm+'-' +dd ;
+   $("#FechaConsulta").attr({"min" : hoy});
+});
+
+    $.validator.unobtrusive.parse("#agregarConsulta");
+    </script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

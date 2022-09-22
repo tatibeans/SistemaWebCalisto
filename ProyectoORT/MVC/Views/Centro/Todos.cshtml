@@ -1,0 +1,65 @@
+﻿@model IEnumerable<MVC.Models.ModeloCentro>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Todos</title>
+</head>
+<body>
+    <p>
+        @Html.ActionLink("Agregar un centro", "SegundoCrearCentro")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Direccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Correo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OperativoDesde)
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Direccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Telefono)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Correo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OperativoDesde)
+            </td>
+            <td>
+                @Html.ActionLink("Dar de Baja", "Remove", new { id=item.Rut }) |
+                @Html.ActionLink("Agregar Director", "AgregarDirector", new { id=item.Rut }) 
+      
+            </td>
+        </tr>
+    }
+    
+    </table>
+</body>
+</html>

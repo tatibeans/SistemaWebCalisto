@@ -1,0 +1,18 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!DOCTYPE html>
+<html>
+<body>
+
+    <h1>Home usuario</h1>
+    <p>Hola buenos días @ViewBag.NombreUsu</p>
+
+    @Html.ActionLink("Ingresar un residente", "IngresoResidente", "Residente")
+    @ViewBag.Mensaje
+
+</body>
+</html>

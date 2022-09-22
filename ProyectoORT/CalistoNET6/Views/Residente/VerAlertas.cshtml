@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Dominio.Entidades.Alerta>
+
+
+
+<link href="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<script src="https://unpkg.com/bootstrap-table@1.20.2/dist/bootstrap-table.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/locale/bootstrap-table-es-AR.min.js"></script>
+
+<div id="Alertas"><h4>Alertas</h4></div>
+<table id="table" data-pagination="true" data-toolbar="#Alertas" data-page-size="5" data-search="true" data-sortable="true">
+    <thead>
+        <tr>
+            <th data-sortable="true" data-visible="false" data-field="idAlerta">Id</th>
+            <th data-sortable="true" data-field="ciResidente">Cédula del residente</th>
+               <th data-sortable="true" data-field="nombre">Nombre del residente</th>
+            <th data-sortable="true" data-field="fecha" data-formatter="formatearFecha">Fecha</th>
+            <th data-sortable="true" data-field="situacion">Situación</th>
+            <th data-sortable="true" data-field="mensaje">Mensaje</th>
+            <th data-sortable="true" data-field="urgente" data-formatter="formatearUrgente">Urgente</th>
+
+        </tr>
+    </thead>
+</table>
+
+<script>
+
+    var d = new Date().getDate();
+    var m = new Date().getMonth() + 1;
+    var y = new Date().getFullYear();
+    var fecha = armarFecha();
+
+    function armarFecha() {
+        if (m < 10) {
+            return d + "/" + "0" + m + "/" + + y
+        }
+        else {
+            return d + "/" + m + "/" + y
+        }
+
+    }
+    var table = $('#table')
+    var data = @Html.Raw(Json.Serialize(@Model));
+    table.bootstrapTable({ data: data })
+
+    function formatearFecha(value, row, index) {
+        var fecha = row.fecha.substring(0, 10);
+        var hora =  row.fecha.substring(11, 19);
+        return [
+            `<div> Fecha: ${fecha} / Hora: ${hora}</div>`
+        ].join('')
+
+
+    }
+
+    function formatearUrgente(value, row, index) {
+        if (row.urgente) {
+            return [
+                `<div>Si</div>`
+            ].join('')
+        } else {
+            return [
+                `<div>No</div>`
+            ].join('')
+        }
+
+
+    }
+
+
+</script>

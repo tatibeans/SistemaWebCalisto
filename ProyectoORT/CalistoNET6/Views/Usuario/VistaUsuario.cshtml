@@ -1,0 +1,155 @@
+﻿@using Dominio.Entidades
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="mt-2">
+
+    <h4 class="mt-2">Últimos ingresos</h4>
+    <hr />
+    <div class="d-flex justify-content-around">
+
+        @{
+            foreach (Residente r in ViewBag.Residentes)
+            {
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Nombre: @r.Nombre</h5>
+                        <h6 class="card-subtitle mb-2">Cedula: @r.Cedula</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">Ingreso: @r.FechaIngreso</h6>
+                        <p class="card-subtitle mb-2 ">Mutualista: @r.Mutualista</p>
+                        <p class="card-subtitle mb-2 ">Sexo: @r.Genero</p>
+                        <p class="card-subtitle mb-2 ">Responsable: @r.unResponsable.Nombre</p>
+                    </div>
+                </div>
+
+            }
+
+        }
+
+    </div>
+</div>
+
+@{
+    if (ViewBag.Alertas.Count >5)
+    {
+        <div class="mt-2">
+
+            <h4 class="mt-2">Últimas alertas</h4>
+            <hr />
+            <div id="multi-item-example" class="carousel slide carousel-multi-item mt-1" data-ride="carousel">
+
+
+                <!--/.Controls-->
+                <!--Indicators-->
+                <ol class="carousel-indicators">
+                    <li data-target="#multi-item-example" data-slide-to="0" class="active"></li>
+                    <li data-target="#multi-item-example" data-slide-to="1"></li>
+
+                </ol>
+                <!--/.Indicators-->
+                <!--Slides-->
+                <div class="carousel-inner" role="listbox">
+
+                    <!--First slide-->
+                    <div class="carousel-item active">
+
+                        <div class="col-md-3" style="float:left">
+                            <div class="card mb-2">
+                                <div class="card-body">
+                                    <h5 class="card-title">Residente: @ViewBag.Alertas[0].Nombre</h5>
+
+                                    @{
+                                        if (ViewBag.Alertas[0].Urgente == true)
+                                        {
+                                            <span class="badge badge-danger">Urgente</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-success">No Urgente</span>
+                                        }
+                                    }
+                                    <h6 class="card-title">Situacion: @ViewBag.Alertas[0].Situacion</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">Fecha: @ViewBag.Alertas[0].Fecha</h6>
+                                    <p class="card-text">Mensaje: @ViewBag.Alertas[0].Mensaje</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        @{
+                            for (int i = 1; i < 4; i++)
+                            {
+
+                                <div class="col-md-3" style="float:left">
+                                    <div class="card mb-2">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Residente: @ViewBag.Alertas[i].Nombre</h5>
+                                            @{
+                                                if (ViewBag.Alertas[i].Urgente == true)
+                                                {
+                                                    <span class="badge badge-danger">Urgente</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-success">No Urgente</span>
+                                                }
+                                            }
+                                            <h6 class="card-title">Situacion: @ViewBag.Alertas[i].Situacion</h6>
+                                            <h6 class="card-subtitle mb-2 text-muted">Fecha: @ViewBag.Alertas[i].Fecha</h6>
+                                            <p class="card-text">Mensaje: @ViewBag.Alertas[i].Mensaje</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <div class="carousel-item ">
+                        @{
+                            for (int i = 5; i < ViewBag.Alertas.Count; i++)
+                            {
+                                if (i < 9) { 
+                                <div class="col-md-3" style="float:left">
+                                    <div class="card mb-2">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Residente: @ViewBag.Alertas[i].Nombre</h5>
+                                            @{
+                                                if (ViewBag.Alertas[i].Urgente == true)
+                                                {
+                                                    <span class="badge badge-danger">Urgente</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-success">No Urgente</span>
+                                                }
+                                            }
+                                            <h6 class="card-title">Situacion: @ViewBag.Alertas[i].Situacion</h6>
+                                            <h6 class="card-subtitle mb-2 text-muted">Fecha: @ViewBag.Alertas[i].Fecha</h6>
+                                            <p class="card-text">Mensaje: @ViewBag.Alertas[i].Mensaje</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        }
+
+                    </div>
+
+                </div>
+                <!--Controls-->
+                <div class="controls-top">
+                    <a class="btn-floating" href="#multi-item-example" data-slide="prev"><i class="fas fa-chevron-left"></i></a>
+                    <a class="btn-floating" href="#multi-item-example" data-slide="next">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    }
+}
+
+

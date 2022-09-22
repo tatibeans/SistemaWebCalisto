@@ -1,0 +1,85 @@
+﻿@using Dominio.Entidades;
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Mi aplicación ASP.NET</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Nombre de la aplicación", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @{
+                        Usuario usu = (Session["Usuario"]) as Usuario;
+                        if (usu != null)
+                        {
+                            if (usu.DevolverRol().Contains("DIRECTOR"))
+                            {
+                                <li>@Html.ActionLink("Inicio", "Index", "Usuario")</li>
+                                <li>@Html.ActionLink("Registrar", "RegistroDatos", "Usuario")</li>
+                                <li>@Html.ActionLink("Salir", "LogOut", "Usuario")</li>
+                                <li>@Html.ActionLink("Ver usuarios", "VerTodos", "Usuario")</li>
+                                <li>@Html.ActionLink("Ver residentes", "Index", "Residente")</li>
+                                <li>@Html.ActionLink("Agregar signos vitales", "InicioAgregarSigno", "Residente")</li>
+
+                            }
+                            else if (usu.DevolverRol().Contains("ADMINISTRADOR"))
+                            {
+                                <li>@Html.ActionLink("Inicio", "Index", "Usuario")</li>
+                                <li>@Html.ActionLink("Registrar", "RegistroDatos", "Usuario")</li>
+                                <li>@Html.ActionLink("Salir", "LogOut", "Usuario")</li>
+                                <li>@Html.ActionLink("Residentes", "Index", "Residente")</li>
+                                <li>@Html.ActionLink("Ingresar Residente", "IngresoResidente", "Residente")</li>
+                                <li>@Html.ActionLink("Actualizar Residente", "ActualizarResidente", "Residente")</li>
+                                <li>@Html.ActionLink("Ver Todos", "VerTodos", "Usuario")</li>
+                                <li>@Html.ActionLink("Ver residentes", "Index", "Residente")</li>
+                                <li>@Html.ActionLink("Agregar signos vitales", "InicioAgregarSigno", "Residente")</li>
+
+                            }
+                            else
+                            {
+                                <li>@Html.ActionLink("Inicio", "Index", "Usuario")</li>
+                                <li>@Html.ActionLink("Registrar", "RegistroDatos", "Usuario")</li>
+
+                                <li>@Html.ActionLink("Salir", "LogOut", "Usuario")</li>
+                                <li>@Html.ActionLink("Ver Todos", "VerTodos", "Usuario")</li>
+
+                            }
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>Proyecto Calisto</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @*@Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/Scripts/jquery-3.4.1.min.js")*@
+    @Scripts.Render("~/Scripts/jquery.unobtrusive-ajax.min.js")
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+﻿@model MVC.Models.ModeloSignoVital
+
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/inputmask")
+
+<div class="modal-header">
+    <h4 class="modal-tittle">Agregar</h4>
+</div>
+
+<div class="modal-body">
+
+
+
+    @using (Html.BeginForm("AgregarSigno", "Residente", FormMethod.Post, new { id = "formularioAgregarSigno" }))
+        {
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Ingresar signos vitales</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CiResidente, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CiResidente, new { htmlAttributes = new { @class = "form-control", @readonly = true } })
+                @Html.ValidationMessageFor(model => model.CiResidente, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            <div class="col-md-10">
+
+                <div class="col-md-2">
+                    @Html.LabelFor(model => model.PresionMinima, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.EditorFor(model => model.PresionMinima, new
+                    {
+                        htmlAttributes = new
+                        {
+                            @class = "form-control",
+                   @onkeypress = "return event.charCode >= 48 && event.charCode <= 57 && this.value.length <2 "
+                        }
+                    })
+
+                </div>
+
+                <div class="col-md-2">
+                    @Html.LabelFor(model => model.PresionMaxima, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                    @Html.EditorFor(model => model.PresionMaxima, new
+                    {
+                        htmlAttributes = new
+                        {
+                            @class = "form-control",
+                   @onkeypress = "return event.charCode >= 48 && event.charCode <= 57 && this.value.length <2 "
+                        }
+                    })
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Azucar, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Azucar, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Azucar, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Oxigeno, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Oxigeno, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Oxigeno, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Temperatura, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Temperatura, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Temperatura, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Pulso, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Pulso, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Pulso, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Comentario, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Comentario, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Comentario, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    <span class="hidden-xs">Cerrar</span>
+                </button>
+
+                <button type="submit" class="btn btn-primary">
+                    <span class="fa fa-save"></span>
+                    <span class="hidden-xs"> Guardar</span>
+                </button>
+
+            </div>
+
+
+        </div>
+    </div>
+        }
+
+    </div>
+    
+
+
+        <script>
+
+            function armarPresion() {
+
+                if ((baja && !alta) || (!baja && alta)) return false;
+                if (baja < 0 || alta < 0) return false;
+                if (baja > alta) return false;
+                if (baja > 40 || alta > 40) return false;
+                if (isNaN(baja) || isNaN(alta)) {
+                    baja = 0;
+                    alta = 0;
+                }
+                return true;
+            }
+
+            $("#formularioAgregarSigno").submit(function () {
+                if (armarPresion()) {
+                    return true;
+                }
+                alert("El valor de presión sanguínea no es correcto.");
+                return false;
+            })
+
+            var baja = parseInt(document.getElementById('PresionMinima'));
+            var alta = parseInt(document.getElementById('PresionMaxima'));
+            var azucar = document.getElementById('Azucar');
+            var oxi = document.getElementById('Oxigeno');
+            var temp = document.getElementById('Temperatura');
+            var pulso = document.getElementById('Pulso');
+
+            Inputmask("9.9{0,3}").mask(azucar);
+
+            Inputmask("9{1,3}").mask(oxi);
+
+            Inputmask("9{1,2}.9{0,1}").mask(temp);
+
+            Inputmask("9{0,3}").mask(pulso);
+
+
+
+
+
+        </script>

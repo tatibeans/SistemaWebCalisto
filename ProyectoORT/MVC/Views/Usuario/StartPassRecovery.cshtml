@@ -1,0 +1,31 @@
+﻿@model MVC.Models.ViewModel.RecoveryViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <div class="form-style">
+            <form action="@Url.Content("StartPassRecovery")" method="post">
+
+                <label>Ingresa tu cedula</label>
+                @Html.TextBoxFor(d => d.Cedula, null, new { @class = "form-control" })
+                @Html.ValidationMessageFor(d => d.Cedula, null, new { style = "color:red" })
+                <br />
+
+                <div class="text-right">
+                    <button class="btn btn-primary">Recuperar</button>
+                </div>
+
+                @if (ViewBag.Mensaje != null)
+                {
+                    <span style="color: darkred; border: 2px solid darkred; padding: 5px;">
+                        @ViewBag.Mensaje
+                    </span>
+
+                }
+            </form>
+        </div>
+    </div>
+</div>

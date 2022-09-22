@@ -1,0 +1,73 @@
+﻿@model List<MVC.Models.ModeloResSignos>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Cédula
+        </th>
+        <th>
+            Género
+        </th>
+        <th></th>
+    </tr>
+    <tbody id="tablaResidentes">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genero)
+                </td>
+                <td>
+                    <button type="button" onclick="AgregarSigno(@item.Cedula)" class="btn btn-success">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true">Agregar</span>
+                    </button>
+                    <button type="button" onclick="VerSignos(@item.Cedula)" class="btn btn-success">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true">Ver últimos</span>
+                    </button>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+
+<div class="pager">
+    <nav aria-label="Page navigation">
+        <ul class="pagintation">
+            @for (int i = 1; i <= ViewBag.CantidadResidentes; i++)
+            {
+                if (i == 1)
+                {
+                    <li>
+                        <a href="#" aria-label="Previous" id="pag@i" onclick="GetPagina(@i)">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+
+                <li><a href="#" id="pag@i" onclick="GetPagina(@i)">@i</a></li>
+                if (i == ViewBag.CantidadResidentes)
+                {
+                    <li>
+                        <a href="#" aria-label="next" id="pag_@i" onclick="GetPagina(@i)">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>
+
+

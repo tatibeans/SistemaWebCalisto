@@ -1,0 +1,121 @@
+﻿@model CalistoNET6.Models.ModeloUsuario
+
+
+<div class="modal-header">
+    <h3 class="align-middle">Editar un usuario</h3>
+    <button type="button" class="btn-close align-middle" data-bs-dismiss="modal" aria-label="Close" data-toggle="tooltip" data-placement="bottom" title="Cerrar"></button>
+
+</div>
+<div class="modal-body">
+
+    <div class="row">
+
+        <div class="col-md-12">
+            <form asp-action="Actualizar" id="actualizarUsuario" name="actualizarUsuario">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+               
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 "> <label asp-for="Cedula" class="control-label"></label> </div>
+                    <div class="col-7 "> <input asp-for="Cedula" class="form-control" id="Cedula" readonly onkeypress="return event.charCode >= 48 && event.charCode <= 57" /> </div>
+                    <span asp-validation-for="Cedula" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 ">  <label asp-for="Nombre" class="control-label"></label> </div>
+                    <div class="col-7 "> <input asp-for="Nombre" class="form-control" id="Nombre" /> </div>
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 ">  <label asp-for="Tipos" class="control-label"></label> </div>
+                    <div class="col-7 ">
+                        <select asp-for="Tipos" data-placeholder="Seleccione los roles" class="selectpicker form-control" multiple data-live-search="true" id="tipos">
+                            @for (int i = 0; i < @ViewBag.TiposUsuario.Count; i++)
+                            {
+                                bool esta = false;
+                                bool sePuedeCambiar = false;
+                                for (int j = 0; j < @ViewBag.TipoUsuYaTiene.Count; j++)
+                                {
+                                    if (@ViewBag.TiposUsuario[i].Tipo == @ViewBag.TipoUsuYaTiene[j].Tipo)
+                                    {
+                                        esta = true;
+                                    }                                    
+                                }
+                                if (@ViewBag.TiposUsuario[i].Id >= @ViewBag.TipoUsuMayor && !@ViewBag.RespConResidentes)
+                                {
+                                    sePuedeCambiar = true;
+                                }
+
+                                if (esta && sePuedeCambiar)
+                                {
+                                    <option value="@ViewBag.TiposUsuario[i].Id|@ViewBag.TiposUsuario[i].Tipo" selected>@ViewBag.TiposUsuario[i].Tipo</option>
+                                }
+                                else if (esta && !sePuedeCambiar)
+                                {
+                                    <option value="@ViewBag.TiposUsuario[i].Id|@ViewBag.TiposUsuario[i].Tipo" selected disabled>@ViewBag.TiposUsuario[i].Tipo</option>
+                                }
+                                else if (!esta && sePuedeCambiar)
+                                {
+                                    <option value="@ViewBag.TiposUsuario[i].Id|@ViewBag.TiposUsuario[i].Tipo" >@ViewBag.TiposUsuario[i].Tipo</option>
+                                }
+                                else if (!esta && !sePuedeCambiar) 
+                                {
+                                    <option value="@ViewBag.TiposUsuario[i].Id|@ViewBag.TiposUsuario[i].Tipo" disabled>@ViewBag.TiposUsuario[i].Tipo</option>
+                                }
+
+                            }
+                        </select>
+                    </div>
+                    <span asp-validation-for="Tipos" id="TiposError" class="text-danger"></span>
+                </div>
+
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 ">  <label asp-for="Correo" class="control-label"></label> </div>
+                    <div class="col-7 "> <input asp-for="Correo"  class="form-control" id="Correo" /> </div>
+                    <span asp-validation-for="Correo" class="text-danger"></span>
+                </div>
+                <div class="form-group row mt-2 ">
+                    <div class="col-5 "> <label asp-for="Telefono" class="control-label"></label> </div>
+                    <div class="col-7 "><input asp-for="Telefono" class="form-control" id="Telefono" onkeypress="return event.charCode >= 48 && event.charCode <= 57" /> </div>
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $('select').selectpicker();
+
+    $.validator.unobtrusive.parse("#actualizarUsuario");
+
+    var tiposUsuario = $('#tipos option:selected').toArray().map(item => item.value);
+    $("#actualizarUsuario").submit(function () {
+
+        var tel = $("#Telefono").val();
+        var nom = $("#Nombre").val();
+        var mail = $("#Correo").val();
+        var ci = $("#Cedula").val();      
+        $('#tipos option:selected').removeAttr('disabled');
+        
+        var tiposUsuario = $('#tipos option:selected').toArray().map(item => item.value);
+        if($("#actualizarUsuario").valid()){
+        guardar(tel, nom, mail, ci, tiposUsuario)
+         }
+        return false;
+
+    });
+
+
+
+</script>
+
+   

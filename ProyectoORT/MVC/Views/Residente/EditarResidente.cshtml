@@ -1,0 +1,184 @@
+﻿@model MVC.Models.ModeloResidenteActualizar
+
+
+
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
+
+</div>
+<div class="modal-body">
+
+    @using (Html.BeginForm("ActualizarResidente", "Residente", FormMethod.Post, new {id="formularioEditar"}))
+    {
+        @Html.AntiForgeryToken()
+
+        <h4>Editar residente</h4>
+
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Cedula, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Cedula, new { htmlAttributes = new { @class = "form-control ", @readonly = true, @id = "ci" } })
+                    @Html.ValidationMessageFor(model => model.Cedula, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @id = "nom" } })
+                    @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Dieta, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Dieta, new { htmlAttributes = new { @class = "form-control", @id = "dieta" } })
+                    @Html.ValidationMessageFor(model => model.Dieta, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Mutualista, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Mutualista, new { htmlAttributes = new { @class = "form-control", @id = "mut" } })
+                    @Html.ValidationMessageFor(model => model.Mutualista, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="row form-group">
+                @Html.LabelFor(model => model.Alergias, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                <div class="col-md-2">
+                    <input type="text" class="form-control" id="ingresoAlergia" />
+                </div>
+
+                <div class="col-md-1">
+                    <span id="btnElegir" onclick="agregarAlergia()" class="btn btn-info glyphicon glyphicon-plus" aria-hidden="true"></span>
+
+                </div>
+            </div>
+
+            <div class="col-md-12 col-md-offset-2">
+                <div class="col-md-5 row" id="tablaAlergias">
+                    @if (!string.IsNullOrEmpty(Model.Alergias))
+                    {
+                        string[] aler = Model.Alergias.Split('|');
+                        foreach (string a in aler)
+                        {
+                            <label class="col-md-offset-1">
+                                <input type="checkbox" class="alerg" value="@a" checked />
+                                @a
+                            </label>
+                        }
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="row form-group">
+                @Html.LabelFor(model => model.Condiciones, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                <div class="col-md-2">
+                    <input type="text" class="form-control" id="ingresoCondicion" />
+                </div>
+
+                <div class="col-md-1">
+                    <span id="btnElegir" onclick="agregarCondicion()" class="btn btn-info glyphicon glyphicon-plus" aria-hidden="true"></span>
+
+                </div>
+            </div>
+
+            <div class="col-md-12 col-md-offset-2">
+                <div class="col-md-5 row" id="tablaCondiciones">
+                    @if (!string.IsNullOrEmpty(Model.Condiciones))
+                    {
+                        string[] cond = Model.Condiciones.Split('|');
+                        foreach (string c in cond)
+                        {
+                            <label class="col-md-offset-1">
+                                <input type="checkbox" class="condi" value="@c" checked />
+                                @c
+                            </label>
+                        }
+                    }
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.FechaNacimiento, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.FechaNacimiento, new { htmlAttributes = new { @class = "form-control", @id = "fechaNac", @type = "Date", @Value = Model.FechaNacimiento.ToString("yyyy-MM-dd") } })
+                    @Html.ValidationMessageFor(model => model.FechaNacimiento, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Genero, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Genero, new { htmlAttributes = new { @class = "form-control", @id = "genero" } })
+                    @Html.ValidationMessageFor(model => model.Genero, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ServicioFunebre, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ServicioFunebre, new { htmlAttributes = new { @class = "form-control", @id = "servFunebre" } })
+                    @Html.ValidationMessageFor(model => model.ServicioFunebre, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ResponsableCI, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-6">
+                    @Html.EditorFor(model => model.ResponsableCI, new { htmlAttributes = new { @class = "form-control", @id = "txtRespCi", @readonly = true } })
+                    @Html.ValidationMessageFor(model => model.ResponsableCI, "", new { @class = "text-danger" })
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary" onclick="BuscarResponsables()">Cambiar</button>
+                </div>
+            </div>
+           
+            <input type="text" hidden id="listaAlergias" name="listaAlergias" />
+            <input type="text" hidden id="listaCondiciones" name="listaCondiciones" />
+
+
+            <div class="form-group">
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        <span class="hidden-xs">Cerrar</span>
+                    </button>
+
+                    <button type="submit" class="btn btn-success">
+                        <span class="fa fa-save"></span>
+                        <span class="hidden-xs"> Guardar</span>
+                    </button>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    }
+</div>
+
+<script>
+    $("#formularioEditar").submit(function () {
+        armarListas();
+    })
+
+</script>
+
+
+

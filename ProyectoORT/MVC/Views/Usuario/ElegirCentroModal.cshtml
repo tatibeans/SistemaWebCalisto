@@ -1,0 +1,20 @@
+﻿@model List<Dominio.Entidades.Centro>
+
+
+<div class="container">
+    <div class="row">
+        <div class="card-group mt-3">
+            @foreach (Dominio.Entidades.Centro c in Model)
+            {
+            <div class="card text-center border-info col-md-3">
+                <div class="card">
+                <div class="card-body">
+                    <img class="card-img-top fotoCentro" src="https://fotos.perfil.com/2022/04/27/trim/950/534/incendio-geriatrico-villa-urquiza-g20220427-1348045.jpg" alt="Card image cap">
+                    <p class="card-text"><a class="btn btn-primary" onclick="IngresarXCentro('@Html.DisplayFor(ModelItem => c.Rut)')">@Html.DisplayFor(ModelItem => c.Nombre)</a></p>
+                </div>
+            </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

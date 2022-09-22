@@ -1,0 +1,108 @@
+﻿@model CalistoNET6.Models.ModeloResidente
+
+@{
+    Layout = null;
+}
+
+<div class="modal-header border-bottom border-2 border-secondary ">
+     <h3 class="align-middle">Detalles del residente</h3>
+     <button type="button" class="btn-close align-middle" data-bs-dismiss="modal" aria-label="Close"></button>
+
+</div>
+<div class="modal-body">
+    <div>
+        <dl class="dl-horizontal">
+            <p class="border-bottom border-1 border-secondary m-2 p-3">
+                <span class="p-2 fw-bold">@Html.DisplayNameFor(model => model.Nombre):</span>
+                <span class="p-2">@Html.DisplayFor(model => model.Nombre)</span>
+                
+            </p>
+
+
+            <p class="border-bottom border-1 border-secondary m-2 p-3">
+                <span class="p-2 fw-bold">@Html.DisplayNameFor(model => model.Genero):</span>
+                <span class="p-2">@Html.DisplayFor(model => model.Genero)</span>
+                
+            </p>
+
+            <p class="border-bottom border-1 border-secondary m-2 p-3">
+                <span class="p-2 fw-bold">@Html.DisplayNameFor(model => model.Dieta):</span>
+                <span class="p-2">  
+                    @{
+                            if (!String.IsNullOrEmpty(Model.Dieta))
+                            {
+                                    @Html.DisplayFor(model => model.Dieta)
+                            }
+                            else
+                            {
+                                    <span>-</span>
+                            }
+                        }</span>
+            </p>
+
+
+            <p class="border-bottom border-1 border-secondary m-2 p-3">
+                <span class="p-2 fw-bold">@Html.DisplayNameFor(model => model.ResponsableCI)</span>
+                <span class="p-2">@Html.DisplayFor(model => model.ResponsableCI)</span>
+            </p>
+
+ 
+            
+            <p class="border-bottom border-1 border-secondary m-2 p-3">
+                <span class="p-2 fw-bold">
+                    @Html.DisplayNameFor(model => model.FechaNacimiento):</span>
+                <span class="p-2">@Html.DisplayFor(model => model.FechaNacimiento)</span>
+            </p>
+
+
+
+            <p class="border-bottom border-1 border-secondary m-2 p-3">
+                <span class="p-2 fw-bold">@Html.DisplayNameFor(model => model.FechaIngreso):</span>
+                <span class="p-2">@Html.DisplayFor(model => model.FechaIngreso)</span>
+            </p>
+
+
+            <p class="border-bottom border-1 border-secondary m-2 p-3">
+                <span class="p-2 fw-bold">@Html.DisplayNameFor(model => model.Mutualista):</span>
+                <span class="p-2">@Html.DisplayFor(model => model.Mutualista)</span>
+            </p>
+
+
+            <p class="border-bottom border-1 border-secondary m-2 p-3">
+                <span class="p-2 fw-bold">@Html.DisplayNameFor(model => model.Alergias):</span>
+                <span class="p-2"> @{
+                            if (!String.IsNullOrEmpty(Model.Alergias))
+                            {
+                                    @Html.DisplayFor(model => model.Alergias)
+                            }
+                            else
+                            {
+                                    <span>-</span>
+                            }
+                        }</span>
+            </p>
+
+
+            <p class="border-bottom border-1 border-secondary m-2 p-3">
+                <span class="p-2 fw-bold">@Html.DisplayNameFor(model => model.Condiciones):</span>
+                <span class="p-2"> @{
+                            if (!String.IsNullOrEmpty(Model.Condiciones))
+                            {
+                                    @Html.DisplayFor(model => model.Condiciones)
+                            }
+                            else
+                            {
+                                    <span>-</span>
+                            }
+                        }</span>
+            </p>
+
+
+            <p class="border-bottom border-1 border-secondary m-2 p-3">
+                <span class="p-2 fw-bold">@Html.DisplayNameFor(model => model.ServicioFunebre):</span>
+                <span class="p-2">@Html.DisplayFor(model => model.ServicioFunebre)</span>
+            </p>
+
+        </dl>         
+    </div>
+</div>
